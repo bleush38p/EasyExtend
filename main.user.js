@@ -1,5 +1,6 @@
 // ==UserScript==
 // @name       EasyExtend
+// @author     bleush38p / jTron
 // @namespace  http://scratch.mit.edu/users/jTron/
 // @version    0.1
 // @description  Easily and safely adds custom extensions to Scratch projects.
@@ -42,9 +43,77 @@
     }
   };
   EEXT.load = function () {
-    !function(ext) {
+    setTimeout(function() {
+      var ext = {};
+      
       console.info('[EEXT] Scratch is ready! Ready to insert EEXT/importer');
-    }({});
+      
+      ext._shutdown = function () {};
+      
+      var status = 0; 
+      
+      ext._getStatus = function() {
+        return [{status: 2, msg: 'Ready, though no libraries are installed yet.'},
+                {status: 2, msg: 'Ready.'},
+                {status: 0, msg: 'Install canceled.'}][status];
+      };
+      
+      var descriptor = {
+        blocks: [
+          ['h', 'on EEXT ready', 'onceReady'],
+          ['b', 'EEXT ready?', 'isReady'],
+          ['-'],
+          [' ', 'add EEXT library %m.liblist', 'addEEXTLib', ''],
+          [' ', 'add external library %s', 'addHTTPLib', 'http://'],
+          ['f', 'load missing libraries', 'loadLibs', ''],
+          ['-'],
+          ['h', 'when user installs libraries', 'onceInstalled'],
+          ['h', 'when user cancels install', 'onceCanceled'],
+          ['b', 'user installed libraries?', 'isInstalled'],
+          ['b', 'user canceled install?', 'isCanceled']
+        ],
+        
+        menus: {
+          liblist: ['no libraries yet :(']
+          // possibly get this dynamically from a server?
+        },
+        
+        url: 'https://github.com/bleush38p/EasyExtend'
+      };
+      
+      // Library arrays
+      var eextLibsToInstall = [],
+          eextLibsInstalled = [],
+          httpLibsToInstall = [],
+          httpLibsInstalled = [];
+      
+      // Install checking
+      var onceInstalled = false,
+          onceCanceled  = false,
+          isInstalled   = false,
+          isCanceled    = false;
+      
+      var rtrue = function () {return true;};
+      
+      // These should be true as soon as the extension is loaded!
+      ext.onceReady = rtrue;
+      ext.isReady = rtrue;
+      
+      ext.onceInstalled = function() {return onceInstalled;};
+      ext.onceCanceled  = function() {return onceCanceled ;};
+      ext.isInstalled   = function() {return isInstalled  ;};
+      ext.isCanceled    = function() {return isCanceled   ;};
+      
+      ext.addEEXTLib = function (libname) { /* ... */ };
+      ext.addHTTPLib = function (liburi)  { /* ... */ };
+      
+      ext.loadLibs   = function ()        { /* ... */ };
+      
+      // And now to register it with Scratch...
+      ScratchExtensions.register('EEXT/importer', descriptor, ext);
+      
+      console.info('[EEXT] EEXT/importer inserted!');
+    }, 5000); // That should give everything enough time, there's an odd update glitch sometimes
   };
 
   // Quick Access

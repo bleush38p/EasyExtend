@@ -1,7 +1,7 @@
 EasyExtend
 ==========
 
-Userscript friendly easy extension loader for Scratch 2.0.
+Userscript friendly easy extension loader for [Scratch 2.0](http://scratch.mit.edu).
 
 
 ## Installation
@@ -38,7 +38,7 @@ EEXT also has support for installing external libraries by their URL. As these l
 
 The user will be warned of the dangers of importing foreign javascript and encouraged to only do so if they trust the source.
 
-Because EEXT doesn't want to be allowed to import *any javascript file on the web*, a `manifest.json` must accompany each extension, which must be on the same domain as the script. The format for this manifest is WIP.
+Because EEXT isn't and shouldn't be allowed to import *any javascript file on the web*, a `manifest.json` must accompany each extension, which must be on the same domain as the script. The format for this manifest is WIP.
 
 To import external libraries, the `add external library [ ]` block is used. The finer points of this block are identical to those of the `add EEXT library [ v]` block, except for instead of installing a preset extension, one will be loaded from the URL given.
 

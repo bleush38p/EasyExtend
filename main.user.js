@@ -10,6 +10,7 @@
 
 !function($, root) {
   root.EEXT = {}; // Get it to exist, then we can just use EEXT from now on.
+  
   EEXT.init = function () {
     // This will run as soon as the page is loaded.
     // It will start code that checks for the player, unless...
@@ -26,6 +27,7 @@
     EEXT.loadInt = setInterval(EEXT.testScratch, 1000);
     return;
   };
+  
   EEXT.testScratch = function () {
     // If the player's loaded by now, we'll get started.
     if (EEXT.scratchLoaded()) {
@@ -42,6 +44,7 @@
       return;
     }
   };
+  
   EEXT.load = function () {
     setTimeout(function() {
       var ext = {};
@@ -65,7 +68,7 @@
           ['-'],
           [' ', 'add EEXT library %m.liblist', 'addEEXTLib', ''],
           [' ', 'add external library %s', 'addHTTPLib', 'http://'],
-          ['f', 'load missing libraries', 'loadLibs', ''],
+          [' ', 'load missing libraries', 'loadLibs', ''],
           ['-'],
           ['h', 'when user installs libraries', 'onceInstalled'],
           ['h', 'when user cancels install', 'onceCanceled'],
@@ -125,10 +128,18 @@
       return false;
     }
   };
+  
+  EEXT.confirmEEXT = function () {
+    
+  };
+  
+  EEXT.confirmHTTP = function () {
+    
+  };
 
   // Notifications
   EEXT.notif = function (n) {
-    // For now, this is a notification, but I'll make on-page notifications
+    // For now, this is in the console, but I'll make on-page notifications
     // once I'm done with this beginning stuff.
     console.group(n.title);
     console.log(n.info);
@@ -141,8 +152,7 @@
     FAILEDLOAD: {
       title: 'Scratch didn\'t load in time!',
       info: 'Either the scratch player took too long to load, or something went wrong.',
-      sugg: 'Try reloading the page.',
-
+      sugg: 'Try reloading the page.'
     }
   };
   

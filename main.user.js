@@ -12,48 +12,31 @@
   root.EEXT = {}; // Get it to exist, then we can just use EEXT from now on.
   
   EEXT.init = function () {
-/*
-    // This will run as soon as the page is loaded.
-    // It will start code that checks for the player, unless...
-    console.info('[EEXT] Waiting for Scratch SWF to load...');
-
-    // ...the player is already loaded:
-    if (EEXT.scratchLoaded()) {
-      EEXT.load();
-      return;
-    }
-
-    // We'll keep testing for scratch every second, then.
-    EEXT.loadTries = 0;
-    EEXT.loadInt = setInterval(EEXT.testScratch, 1000);
-    return;
-*/
+    $('head').append(EEXT.hs.CSS); // I'm using stylish locally to test css
+                                   // that hasn't been synced to GH yet.
+    EEXT.statusLetter = 'E';
+    EEXT.statusColor = EEXT.scs.UNLOADED;
+    $('#content').append(EEXT.hs.MAIN);
   };
-  
-/*
-  EEXT.testScratch = function () {
-    // If the player's loaded by now, we'll get started.
-    if (EEXT.scratchLoaded()) {
-      clearInterval(EEXT.loadInt);
-      EEXT.load();
-      return;
-    }
-    EEXT.loadTries++;
-    
-    // If it's been a minute, we'll give up.
-    if (EEXT.loadTries > 60) {
-      clearInterval(EEXT.loadInt);
-      EEXT.notif(EEXT.n.FAILEDLOAD);
-      return;
-    }
-  };
-*/
   
   EEXT.load = function () {
-    /*setTimeout(*/!function() {
-      var ext = {};
+    EEXT.isWorking(true);
+    
+    if (!EEXT.scratchLoaded()) {
+      EEXT.statusColor = EEXT.scs.ERROR;
+      EEXT.statusLetter = '!';
+      EEXT.updateStatus();
+      EEXT.notif(EEXT.n.FAILEDLOAD);
+      EEXT.isWorking(false);
+      return;
+    }
+    
+    !function(ext) {
+      // This will make sure this function works even if the extension's
+      // already been installed.
+      ScratchExtensions.unregister('EEXT/importer'); 
       
-      console.info('[EEXT] Scratch is ready! Ready to insert EEXT/importer');
+      console.info('[EEXT] Inserting EEXT/importer...');
       
       ext._shutdown = function () {};
       
@@ -120,9 +103,25 @@
       ScratchExtensions.register('EEXT/importer', descriptor, ext);
       
       console.info('[EEXT] EEXT/importer inserted!');
-    }()/*, 5000)*/; // That should give everything enough time, there's an odd update glitch sometimes
+      
+      
+      EEXT.statusColor = EEXT.scs.GOOD;
+      EEXT.statusLetter = 'E';
+      
+      EEXT.updateStatus();
+      
+      EEXT.isWorking(false);
+    }({});
   };
 
+  EEXT.confirmEEXT = function () {
+    
+  };
+  
+  EEXT.confirmHTTP = function () {
+    
+  };
+  
   // Quick Access
   EEXT.scratchLoaded = function () {
     // This will try to see if the Scratch player is finished loading or not.
@@ -133,14 +132,37 @@
     }
   };
   
-  EEXT.confirmEEXT = function () {
-    
-  };
+  EEXT.isWorking = function (v) {
+    if (typeof v == 'boolean')
+      if (v) {
+        $('.EEXT-main').addClass('EEXT-loading');
+        $('.EEXT-status').addClass('EEXT-invis');
+        $('.EEXT-loader').removeClass('EEXT-invis');
+        return true;
+      } else {
+        $('.EEXT-main').removeClass('EEXT-loading');
+        $('.EEXT-status').removeClass('EEXT-invis');
+        $('.EEXT-loader').addClass('EEXT-invis');
+        return false;
+      }
+    else return $('.EEXT-main').hasClass('EEXT-loading');
+  }
   
-  EEXT.confirmHTTP = function () {
-    
-  };
-
+  // Status color/letter
+  EEXT.updateStatus = function () {
+    $('.EEXT-main')
+      .removeClass('EEXT-yellow EEXT-red')
+      .addClass(EEXT.statusColor);
+    $('.EEXT-status')
+      .text(EEXT.statusLetter);
+  }
+  
+  EEXT.scs = {
+    GOOD: '',
+    UNLOADED: 'EEXT-yellow',
+    ERROR: 'EEXT-red'
+  }
+  
   // Notifications
   EEXT.notif = function (n) {
     // For now, this is in the console, but I'll make on-page notifications
@@ -149,20 +171,41 @@
     console.log(n.info);
     console.info(n.sugg);
     console.groupEnd();
-  }
+  };
   
   EEXT.n = {
     // Here's the different possible notifications.
     FAILEDLOAD: {
-      //title: 'Scratch didn\'t load in time!',
       title: 'Scratch doesn\'t appear to have loaded!',
-      //info: 'Either the scratch player took too long to load, or something went wrong.',
       info: 'The scratch player either doesn\'t exist or isn\'t finished loading.',
-      //sugg: 'Try reloading the page.'
-      sugg: 'Reload the page, and make sure you only start EasyExtend once the project inside the player is done loading.'
+      sugg: 'Try again when the project has finished loading. If that doesn\'t work, reload the page, and make sure you only start EasyExtend once the project inside the player is done loading.'
     }
   };
   
+  // HTML/jQuery Obj Snippets
+  EEXT.hs = {
+    CSS: $('<link>', {
+      rel: 'stylesheet',
+      type: 'text/css',
+      href: 'http://raw.githubusercontent.com/' +
+              'bleush38p/EasyExtend/master/main.user.js.css'
+    }),
+    
+    MAIN: $('<div>', {
+      'class': 'EEXT-main EEXT-yellow',
+      click: EEXT.load
+    }).append(
+      $('<span>', {
+        text: 'E',
+        'class': 'EEXT-status'
+      })
+    ).append(
+      $('<div>', {
+        'class': 'EEXT-loader EEXT-invis'
+      })
+    )
+  };
+  
   // And lastly, start it all up.
-  $(document).ready(EEXT.init);
+  $(EEXT.init);
 }(jQuery, window); // (All Scratch pages should have jQuery.)

@@ -12,6 +12,7 @@
   root.EEXT = {}; // Get it to exist, then we can just use EEXT from now on.
   
   EEXT.init = function () {
+/*
     // This will run as soon as the page is loaded.
     // It will start code that checks for the player, unless...
     console.info('[EEXT] Waiting for Scratch SWF to load...');
@@ -26,8 +27,10 @@
     EEXT.loadTries = 0;
     EEXT.loadInt = setInterval(EEXT.testScratch, 1000);
     return;
+*/
   };
   
+/*
   EEXT.testScratch = function () {
     // If the player's loaded by now, we'll get started.
     if (EEXT.scratchLoaded()) {
@@ -44,9 +47,10 @@
       return;
     }
   };
+*/
   
   EEXT.load = function () {
-    setTimeout(function() {
+    /*setTimeout(*/!function() {
       var ext = {};
       
       console.info('[EEXT] Scratch is ready! Ready to insert EEXT/importer');
@@ -116,7 +120,7 @@
       ScratchExtensions.register('EEXT/importer', descriptor, ext);
       
       console.info('[EEXT] EEXT/importer inserted!');
-    }, 5000); // That should give everything enough time, there's an odd update glitch sometimes
+    }()/*, 5000)*/; // That should give everything enough time, there's an odd update glitch sometimes
   };
 
   // Quick Access
@@ -150,9 +154,12 @@
   EEXT.n = {
     // Here's the different possible notifications.
     FAILEDLOAD: {
-      title: 'Scratch didn\'t load in time!',
-      info: 'Either the scratch player took too long to load, or something went wrong.',
-      sugg: 'Try reloading the page.'
+      //title: 'Scratch didn\'t load in time!',
+      title: 'Scratch doesn\'t appear to have loaded!',
+      //info: 'Either the scratch player took too long to load, or something went wrong.',
+      info: 'The scratch player either doesn\'t exist or isn\'t finished loading.',
+      //sugg: 'Try reloading the page.'
+      sugg: 'Reload the page, and make sure you only start EasyExtend once the project inside the player is done loading.'
     }
   };
   

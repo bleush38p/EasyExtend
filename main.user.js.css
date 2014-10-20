@@ -3,8 +3,8 @@
 }
 
 .EEXT-main {
-  position: absolute;
-  right: -32px;
+  position: fixed;
+  left: calc(50% + 476px);
   top: 5px;
   width: 22px;
   height: 22px;
@@ -37,8 +37,10 @@
 }
 
 .editor .EEXT-main {
-  top: 2px;
-  right: 164px;
+  top: 32px;
+  left: calc(100% - 230px);
+  background-color: rgba(0,0,0,0.5);
+  border: 1px solid rgba(0,0,0,0.8);
 }
 .EEXT-yellow {
   color: #ff4;

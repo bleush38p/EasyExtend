@@ -16,7 +16,7 @@
                                    // that hasn't been synced to GH yet.
     EEXT.statusLetter = 'E';
     EEXT.statusColor = EEXT.scs.UNLOADED;
-    $('#content').append(EEXT.hs.MAIN);
+    $('#pagewrapper').append(EEXT.hs.MAIN);
   };
   
   EEXT.load = function () {
@@ -146,7 +146,7 @@
         return false;
       }
     else return $('.EEXT-main').hasClass('EEXT-loading');
-  }
+  };
   
   // Status color/letter
   EEXT.updateStatus = function () {
@@ -155,13 +155,13 @@
       .addClass(EEXT.statusColor);
     $('.EEXT-status')
       .text(EEXT.statusLetter);
-  }
+  };
   
   EEXT.scs = {
     GOOD: '',
     UNLOADED: 'EEXT-yellow',
     ERROR: 'EEXT-red'
-  }
+  };
   
   // Notifications
   EEXT.notif = function (n) {
@@ -187,8 +187,7 @@
     CSS: $('<link>', {
       rel: 'stylesheet',
       type: 'text/css',
-      href: 'http://raw.githubusercontent.com/' +
-              'bleush38p/EasyExtend/master/main.user.js.css'
+      href: 'http://rawgit.com/bleush38p/EasyExtend/master/main.user.js.css'
     }),
     
     MAIN: $('<div>', {

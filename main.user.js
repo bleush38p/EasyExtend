@@ -56,12 +56,14 @@
           ['-'],
           [' ', 'add EEXT library %m.liblist', 'addEEXTLib', 'sample'],
           [' ', 'add external library %s', 'addHTTPLib', 'http://'],
-          [' ', 'load missing libraries', 'loadLibs'],
+          ['w', 'load missing libraries', 'loadLibs'],
           ['-'],
-          ['h', 'when user installs libraries', 'onceInstalled'],
-          ['h', 'when user cancels install', 'onceCanceled'],
-          ['b', 'user installed libraries?', 'isInstalled'],
-          ['b', 'user canceled install?', 'isCanceled']
+          ['h', 'when install is successful', 'onceInstalled'],
+          ['h', 'when install is canceled', 'onceCanceled'],
+          ['h', 'when install fails', 'onceFailed'],
+          ['b', 'installation successful?', 'isInstalled'],
+          ['b', 'installation canceled?', 'isCanceled'],
+          ['b', 'installation falied?', 'isFailed']
         ],
         
         menus: {
@@ -80,10 +82,9 @@
           httpLibsInstalled = [];
       
       // Install checking
-      var onceInstalled = false,
-          onceCanceled  = false,
-          isInstalled   = false,
-          isCanceled    = false;
+      var isInstalled   = false,
+          isCanceled    = false,
+          isFailed      = false;
       
       var rtrue = function () {return true;};
       
@@ -91,10 +92,12 @@
       ext.onceReady = rtrue;
       ext.isReady = rtrue;
       
-      ext.onceInstalled = function() {return onceInstalled;};
-      ext.onceCanceled  = function() {return onceCanceled ;};
+      ext.onceInstalled = function() {return isInstalled  ;};
+      ext.onceCanceled  = function() {return isCanceled   ;};
+      ext.onceFailed    = function() {return isFailed     ;};
       ext.isInstalled   = function() {return isInstalled  ;};
       ext.isCanceled    = function() {return isCanceled   ;};
+      ext.isFailed      = function() {return isFailed     ;};
       
       ext.addEEXTLib = function (libname) {
         if (!($.inArray(libname, eextLibsToInstall) === -1 &&
@@ -102,19 +105,38 @@
               $.inArray(libname, descriptor.menus.liblist) !== -1))
           return;
         eextLibsToInstall.push(libname);
-        console.log(eextLibsToInstall);
       };
-      ext.addHTTPLib = function (liburi)  {
+      ext.addHTTPLib = function (liburi) {
         if (!($.inArray(libname, httpLibsToInstall) === -1 &&
               $.inArray(libname, httpLibsInstalled) === -1 &&
               liburi.slice(-14) ===
               '.mainfest.json'))
           return;
         httpLibsToInstall.push(liburi);
-        console.log(httpLibsToInstall);
       };
       
-      ext.loadLibs   = function ()        { /* ... */ };
+      ext.loadLibs = function (callback) {
+        // just for now, EEXT libs only.
+        EEXT.showInstallWindow(eextLibsToInstall, [], function (success) {
+          if (success === 1) {
+            isInstalled = true;
+            isCanceled = false;
+            isFailed = false;
+            callback();
+          } else if (success === 0) {
+            isInstalled = false;
+            isCanceled = true;
+            isFailed = false;
+            callback();
+          } else {
+            console.warn('Extension import failed: Error ' + success + '.');
+            isInstalled = false;
+            isCanceled = false;
+            isFailed = true;
+            callback();
+          }
+        });
+      };
       
       // And now to register it with Scratch...
       ScratchExtensions.register('EEXT/importer', descriptor, ext);
@@ -131,7 +153,116 @@
     }({}));
   };
   
+  EEXT.installCount = 0;
+  EEXT.totalInstalls = 0;
+  EEXT.installWindow = 0;
+  EEXT.extensionsArea = 0;
+  
+  // Let's do some installing!
+  EEXT.showInstallWindow = function (eextLibs, httpLibs, callback) {
+    if (EEXT.isWorking()) {
+      callback(-1);
+      return;
+    }
+    EEXT.isWorking(true);
+    EEXT.installCount = 0;
+    EEXT.totalInstalls = eextLibs.length;
+    
+    $('body').append($('<div>', {
+      'class': 'EEXT-page-cover EEXT-toremove'
+    }));
+    
+    EEXT.installWindow =  $('<div>', {
+      'class': 'EEXT-modal EEXT-toremove'
+    }).append(
+      $('<div>', {
+        text: 'Extension Install Request',
+        'class': 'EEXT-title'
+      }).append(
+        $('<div>', {
+          'text': '?',
+          'class': 'EEXT-help',
+          click: function () {} // this'll *totally* do something sometime
+        })
+      )
+    ).append(
+      $('<div>', {
+        'class': 'EEXT-hmessage'
+      }).append(
+        'The project '
+      ).append(
+        $('<a>', {
+          'text': EEXT.projectInfo.title,
+          href: 'http://scratch.mit.edu/projects/' + EEXT.projectInfo.id,
+          'class': 'EEXT-pname',
+          'target': '_blank'
+        })
+      ).append(
+        ' by '
+      ).append(
+        $('<a>', {
+          'text': EEXT.projectInfo.creator,
+          href: 'http://scratch.mit.edu/users/' + EEXT.projectInfo.creator,
+          'class': 'EEXT-pname',
+          'target': '_blank'
+        })
+      ).append(
+        ' wants to use the following extensions:'
+      )
+    ).append(
+      $('<div>', {
+        'class': 'EEXT-extlist'
+      })
+    ).append(
+      $('<input>', {
+        'class': 'EEXT-extvs EEXT-extvx',
+        id: 'EEXT-extvx',
+        type: 'checkbox'
+      })
+    ).append(
+      $('<label>', {
+        'class': 'EEXT-extvxl',
+        'for': 'EEXT-extvx'
+      }).append(
+        $('<div>', {
+          'class': 'EEXT-mopt',
+          'text': 'More Options'
+        })
+      )
+    ).append(
+      $('<button>', {
+        'class': 'EEXT-install EEXT-maininstall EEXT-btn',
+        'text': 'INSTALL (...)',
+        disabled: true
+      })
+    ).append(
+      $('<button>', {
+        'class': 'EEXT-nh EEXT-install EEXT-danger EEXT-tf EEXT-btn',
+        'text': 'Always For Proj',
+        disabled: true
+      })
+    ).append(
+      $('<button>', {
+        'class': 'EEXT-nh EEXT-install EEXT-danger EEXT-tf EEXT-btn',
+        'text': 'Always For User',
+        disabled: true
+      })
+    ).append(
+      $('<button>', {
+        'class': 'EEXT-cancel EEXT-btn',
+        'text': 'Cancel',
+        disabled: true
+      })
+    );
+    $('body').append(EEXT.installWindow);
+    EEXT.extensionsArea = $('.EEXT-extlist');
+    
+  };
+  
   // Quick Access
+  
+  EEXT.projectInfo = Scratch.INIT_DATA.PROJECT.model;
+  
   EEXT.scratchLoaded = function () {
     // This will try to see if the Scratch player is finished loading or not.
     try {

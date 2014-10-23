@@ -6,9 +6,10 @@
 // @description  Easily and safely adds custom extensions to Scratch projects.
 // @include    http://scratch.mit.edu/projects/*
 // @copyright  2014+, bleush38p / jTron
+// @grant          none
 // ==/UserScript==
 
-!function($, root) {
+(function($, root) {
   root.EEXT = {}; // Get it to exist, then we can just use EEXT from now on.
   
   EEXT.init = function () {
@@ -31,7 +32,7 @@
       return;
     }
     
-    !function(ext) {
+    (function(ext) {
       // This will make sure this function works even if the extension's
       // already been installed.
       ScratchExtensions.unregister('EEXT/importer'); 
@@ -53,9 +54,9 @@
           ['h', 'on EEXT ready', 'onceReady'],
           ['b', 'EEXT ready?', 'isReady'],
           ['-'],
-          [' ', 'add EEXT library %m.liblist', 'addEEXTLib', ''],
+          [' ', 'add EEXT library %m.liblist', 'addEEXTLib', 'sample'],
           [' ', 'add external library %s', 'addHTTPLib', 'http://'],
-          [' ', 'load missing libraries', 'loadLibs', ''],
+          [' ', 'load missing libraries', 'loadLibs'],
           ['-'],
           ['h', 'when user installs libraries', 'onceInstalled'],
           ['h', 'when user cancels install', 'onceCanceled'],
@@ -64,7 +65,8 @@
         ],
         
         menus: {
-          liblist: ['no libraries yet :(']
+          liblist: ['sample', 'lib1', 'lib2', 'lib3', 'lib4', 'lib5']
+          // just a sample for now.
           // possibly get this dynamically from a server?
         },
         
@@ -94,8 +96,23 @@
       ext.isInstalled   = function() {return isInstalled  ;};
       ext.isCanceled    = function() {return isCanceled   ;};
       
-      ext.addEEXTLib = function (libname) { /* ... */ };
-      ext.addHTTPLib = function (liburi)  { /* ... */ };
+      ext.addEEXTLib = function (libname) {
+        if (!($.inArray(libname, eextLibsToInstall) === -1 &&
+              $.inArray(libname, eextLibsInstalled) === -1 &&
+              $.inArray(libname, descriptor.menus.liblist) !== -1))
+          return;
+        eextLibsToInstall.push(libname);
+        console.log(eextLibsToInstall);
+      };
+      ext.addHTTPLib = function (liburi)  {
+        if (!($.inArray(libname, httpLibsToInstall) === -1 &&
+              $.inArray(libname, httpLibsInstalled) === -1 &&
+              liburi.slice(-14) ===
+              '.mainfest.json'))
+          return;
+        httpLibsToInstall.push(liburi);
+        console.log(httpLibsToInstall);
+      };
       
       ext.loadLibs   = function ()        { /* ... */ };
       
@@ -111,15 +128,7 @@
       EEXT.updateStatus();
       
       EEXT.isWorking(false);
-    }({});
-  };
-
-  EEXT.confirmEEXT = function () {
-    
-  };
-  
-  EEXT.confirmHTTP = function () {
-    
+    }({}));
   };
   
   // Quick Access
@@ -207,4 +216,4 @@
   
   // And lastly, start it all up.
   $(EEXT.init);
-}(jQuery, window); // (All Scratch pages should have jQuery.)
+}(jQuery, window)); // (All Scratch pages should have jQuery.)

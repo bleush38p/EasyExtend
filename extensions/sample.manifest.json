@@ -1,0 +1,20 @@
+{
+  "name": "EEXT/sample",
+  "author": [
+    "EEXT",
+    "http://github.com/bleush38p/EasyExtend"
+  ],
+  "version": "1.0",
+  "js": [
+    "sample.js"
+  ],
+  "css": [],
+  "desc": "An example extension which does example things.",
+  "permissions": [
+    "INTERNETACCESS",
+    {
+      "name": "Emotion control",
+      "desc": "Show human emotions, especially love <3."
+    }
+  ]
+}

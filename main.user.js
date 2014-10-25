@@ -9,15 +9,17 @@
 // @grant          none
 // ==/UserScript==
 
-(function($, root) {
+(function ($, root) {
   root.EEXT = {}; // Get it to exist, then we can just use EEXT from now on.
   
+  EEXT.mainButton = [];
   EEXT.init = function () {
     $('head').append(EEXT.hs.CSS).append(EEXT.hs.FONT);
     
     EEXT.statusLetter = 'E';
     EEXT.statusColor = EEXT.scs.UNLOADED;
     $('#pagewrapper').append(EEXT.hs.MAIN);
+    EEXT.mainButton = $('.EEXT-main');
   };
   
   EEXT.load = function () {
@@ -34,7 +36,7 @@
     
     $.getJSON(
         'http://rawgit.com/bleush38p/EasyExtend/master/extensions.json'
-    ).done(function(data) {
+    ).done(function (data) {
       
       var ext = {};
       
@@ -48,7 +50,7 @@
       
       var status = 0; 
       
-      ext._getStatus = function() {
+      ext._getStatus = function () {
         return [{status: 2, msg: 'Ready, though no libraries are installed yet.'},
                 {status: 2, msg: 'Ready.'},
                 {status: 0, msg: 'Install canceled.'}][status];
@@ -61,7 +63,7 @@
           ['-'],
           [' ', 'add EEXT library %m.liblist', 'addEEXTLib', 'sample'],
           [' ', 'add external library %s', 'addHTTPLib', 'http://'],
-          ['w', 'load missing libraries', 'loadLibs'],
+          ['f', 'load missing libraries', 'loadLibs'],
           ['-'],
           ['h', 'when install is successful', 'onceInstalled'],
           ['h', 'when install is canceled', 'onceCanceled'],
@@ -86,77 +88,112 @@
           httpLibsInstalled = [];
       
       // Install checking
-      var isInstalled   = false,
-          isCanceled    = false,
-          isFailed      = false;
+      var isInstalled    = false,
+          isCanceled     = false,
+          isFailed       = false,
+          isInstalledNow = false,
+          isCanceledNow  = false,
+          isFailedNow    = false;
       
-      var rtrue = function () {return true;};
+      var isReadyNow = true;
       
       // These should be true as soon as the extension is loaded!
-      ext.onceReady = rtrue;
-      ext.isReady = rtrue;
+      ext.onceReady = function () {
+        if (isReadyNow) {
+          isReadyNow = false;
+          return true;
+        }
+        return false;
+      };
+      ext.isReady = function () {return true};
       
-      ext.onceInstalled = function() {return isInstalled  ;};
-      ext.onceCanceled  = function() {return isCanceled   ;};
-      ext.onceFailed    = function() {return isFailed     ;};
-      ext.isInstalled   = function() {return isInstalled  ;};
-      ext.isCanceled    = function() {return isCanceled   ;};
-      ext.isFailed      = function() {return isFailed     ;};
+      ext.onceInstalled = function () {
+        if (isInstalledNow) {
+          isInstalledNow = false;
+          return true;
+        }
+        return false;
+      };
+      ext.onceCanceled  = function () {
+        if (isCanceledNow) {
+          isCanceledNow = false;
+          return true;
+        }
+        return false;
+      };
+      ext.onceFailed    = function () {
+        if (isFailedNow) {
+          isFailedNow = false;
+          return true;
+        }
+        return false;
+      };
+      ext.isInstalled   = function () {return isInstalled  ;};
+      ext.isCanceled    = function () {return isCanceled   ;};
+      ext.isFailed      = function () {return isFailed     ;};
       
       ext.addEEXTLib = function (libname) {
         if (!($.inArray(libname, eextLibsToInstall) === -1 &&
               $.inArray(libname, eextLibsInstalled) === -1 &&
-              $.inArray(libname, descriptor.menus.liblist) !== -1))
+              $.inArray(libname, descriptor.menus.liblist) !== -1) ||
+           EEXT.isWorking())
           return;
         eextLibsToInstall.push(libname);
       };
       ext.addHTTPLib = function (liburi) {
         if (!($.inArray(libname, httpLibsToInstall) === -1 &&
               $.inArray(libname, httpLibsInstalled) === -1 &&
-              liburi.slice(-14) ===
-              '.mainfest.json'))
+              liburi.slice(-14) === '.mainfest.json') ||
+           EEXT.isWorking())
           return;
         httpLibsToInstall.push(liburi);
       };
       
-      ext.loadLibs = function (callback) {
-        // just for now, EEXT libs only.
-        
+      ext.loadLibs = function () {
         if (eextLibsToInstall.length === 0 &&
             httpLibsToInstall.length === 0) {
-          callback();
           return;
         }
         
+        // just for now, EEXT libs only.
         EEXT.showInstallWindow(eextLibsToInstall, [], function (success) {
-          
-          if (success === 1) {
-            isInstalled = true;
-            isCanceled = false;
-            isFailed = false;
-            $.each(eextLibsToInstall, function(i, o) {
-              eextLibsInstalled.push(o);
-            });
-            $.each(httpLibsToInstall, function(i, o) {
-              httpLibsInstalled.push(o);
-            });
-            callback();
-          } else if (success === 0) {
-            isInstalled = false;
-            isCanceled = true;
-            isFailed = false;
-            eextLibsToInstall = [];
-            httpLibsToInstall = [];
-            callback();
-          } else {
-            console.warn('Extension import failed: Error ' + success + '.');
-            isInstalled = false;
-            isCanceled = false;
-            isFailed = true;
-            eextLibsToInstall = [];
-            httpLibsToInstall = [];
-            callback();
-          }
+          setTimeout(function () {
+            if (success === 1) {
+              isInstalled = true;
+              isCanceled = false;
+              isFailed = false;
+              isInstalledNow = true;
+              isCanceledNow = false;
+              isFailedNow = false;
+              $.each(eextLibsToInstall, function (i, o) {
+                eextLibsInstalled.push(o);
+              });
+              $.each(httpLibsToInstall, function (i, o) {
+                httpLibsInstalled.push(o);
+              });
+              eextLibsToInstall = [];
+              httpLibsToInstall = [];
+            } else if (success === 0) {
+              isInstalled = false;
+              isCanceled = true;
+              isFailed = false;
+              isInstalledNow = false;
+              isCanceledNow = true;
+              isFailedNow = false;
+              eextLibsToInstall = [];
+              httpLibsToInstall = [];
+            } else {
+              console.warn('Extension import failed: Error ' + success + '.');
+              isInstalled = false;
+              isCanceled = false;
+              isFailed = true;
+              isInstalledNow = false;
+              isCanceledNow = false;
+              isFailedNow = true;
+              eextLibsToInstall = [];
+              httpLibsToInstall = [];
+            }
+          }, 1000); // Hopefully the extensions are added by now.
         });
       };
       
@@ -165,11 +202,12 @@
       
       console.info('[EEXT] EEXT/importer inserted!');
       
-      
       EEXT.statusColor = EEXT.scs.GOOD;
       EEXT.statusLetter = 'E';
       
       EEXT.updateStatus();
+      
+      EEXT.createMenu();
       
       EEXT.isWorking(false);
     }).fail(function (jqxhr, textStatus, error) {
@@ -396,7 +434,7 @@
   };
   
   EEXT.installFailed = 0;
-  EEXT.checkLoadFinished = function(callback, failed) {
+  EEXT.checkLoadFinished = function (callback, failed) {
     if (failed) {
       EEXT.installFailed = true;
     }
@@ -404,7 +442,7 @@
     if (EEXT.installCount === EEXT.totalInstalls) {
       if (EEXT.installFailed) {
         EEXT.installFailed = false;
-        $('#EEXT-CANCEL').click(function(){
+        $('#EEXT-CANCEL').click(function (){
           $('.EEXT-toremove').remove();
           callback(-2);
           EEXT.isWorking(false);
@@ -416,15 +454,15 @@
         $('.EEXT-btn').removeAttr('disabled');
         $('.EEXT-maininstall').text('INSTALL ' + EEXT.totalInstalls);
 
-        $('#EEXT-CANCEL').click(function() {
+        $('#EEXT-CANCEL').click(function () {
           $('.EEXT-toremove').remove();
           EEXT.isWorking(false);
           callback(0);
         });
         
-        $('#EEXT-MAININSTALL').click(function() {
+        $('#EEXT-MAININSTALL').click(function () {
           $('.EEXT-toremove').remove();
-          $.each(EEXT.jsToImport, function(i, js) {
+          $.each(EEXT.jsToImport, function (i, js) {
             $('body').append(
               $('<script>', {
                 'type': 'text/javascript',
@@ -439,7 +477,25 @@
     }
   };
   
+  EEXT.createMenu = function () {
+    $(EEXT.mainButton).off('click').click(function () {
+      
+    });
+  };
+  
   // Quick Access
+  
+  EEXT.db = {
+    set: function (key, val) {
+      localStorage[key] = JSON.stringify(val);
+    },
+    get: function (key) {
+      return JSON.parse(localStorage[key]);
+    },
+    remove: function (key) {
+      delete localStorage[key];
+    }
+  };
   
   EEXT.projectInfo = Scratch.INIT_DATA.PROJECT.model;
   

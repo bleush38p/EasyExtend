@@ -1,0 +1,15 @@
+{
+  "name": "EEXT/data",
+  "author": [
+    "EEXT",
+    "http://github.com/bleush38p/EasyExtend"
+  ],
+  "version": "1.0",
+  "js": [
+    "data.js"
+  ],
+  "desc": "Adds ability for Scratch to save data which persists by project and by user. Multiple projects running at once can even interact with the same data. Data is never sent anywhere by this extension, and can always be cleared from the console.",
+  "permissions": [
+    "PERSISTANTDATA"
+  ]
+}

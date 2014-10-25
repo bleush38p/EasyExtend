@@ -529,6 +529,10 @@
     INTERNETACCESS: {
       name: 'Full internet access',
       desc: 'Access the internet in an unrestricted manner.'
+    },
+    PERSISTANTDATA: {
+      name: 'Persistant data storage',
+      desc: 'Store data which stays on your computer even after the project has stopped.'
     }
   };
   

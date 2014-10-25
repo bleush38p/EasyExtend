@@ -32,7 +32,12 @@
       return;
     }
     
-    (function(ext) {
+    $.getJSON(
+        'http://rawgit.com/bleush38p/EasyExtend/master/extensions.json'
+    ).done(function(data) {
+      
+      var ext = {};
+      
       // This will make sure this function works even if the extension's
       // already been installed.
       ScratchExtensions.unregister('EEXT/importer'); 
@@ -67,9 +72,8 @@
         ],
         
         menus: {
-          liblist: ['sample', 'lib1', 'lib2', 'lib3', 'lib4', 'lib5']
-          // just a sample for now.
-          // possibly get this dynamically from a server?
+          liblist: data
+          // now fetched from github.
         },
         
         url: 'https://github.com/bleush38p/EasyExtend'
@@ -168,7 +172,14 @@
       EEXT.updateStatus();
       
       EEXT.isWorking(false);
-    }({}));
+    }).fail(function (jqxhr, textStatus, error) {
+      EEXT.statusColor = EEXT.scs.ERROR;
+      EEXT.statusLetter = '!';
+      EEXT.updateStatus();
+      EEXT.notif(EEXT.n.NOEXTENSIONSJSON);
+      EEXT.isWorking(false);
+      return;
+    });
   };
   
   EEXT.installCount = 0;
@@ -496,6 +507,11 @@
       title: 'Scratch doesn\'t appear to have loaded!',
       info: 'The scratch player either doesn\'t exist or isn\'t finished loading.',
       sugg: 'Try again when the project has finished loading. If that doesn\'t work, reload the page, and make sure you only start EasyExtend once the project inside the player is done loading.'
+    },
+    NOEXTENSIONSJSON: {
+      title: 'EasyExtend couldn\'t get the list of extensions.',
+      info: 'In order to work, EasyExtend has to connect to github (or rather, rawgit) to download the list of EEXT extensions.',
+      sugg: 'Make sure that you are able to connect to rawgit.com. You may have to disable a firewall of change proxy settings.'
     }
   };
   

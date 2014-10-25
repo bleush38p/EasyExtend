@@ -53,7 +53,8 @@
       ext._getStatus = function () {
         return [{status: 2, msg: 'Ready, though no libraries are installed yet.'},
                 {status: 2, msg: 'Ready.'},
-                {status: 0, msg: 'Install canceled.'}][status];
+                {status: 0, msg: 'Install canceled.'},
+                {status: 0, msg: 'Install failed.'}][status];
       };
       
       var descriptor = {
@@ -171,8 +172,7 @@
               $.each(httpLibsToInstall, function (i, o) {
                 httpLibsInstalled.push(o);
               });
-              eextLibsToInstall = [];
-              httpLibsToInstall = [];
+              status = 1;
             } else if (success === 0) {
               isInstalled = false;
               isCanceled = true;
@@ -180,8 +180,7 @@
               isInstalledNow = false;
               isCanceledNow = true;
               isFailedNow = false;
-              eextLibsToInstall = [];
-              httpLibsToInstall = [];
+              status = 2;
             } else {
               console.warn('Extension import failed: Error ' + success + '.');
               isInstalled = false;
@@ -190,9 +189,12 @@
               isInstalledNow = false;
               isCanceledNow = false;
               isFailedNow = true;
-              eextLibsToInstall = [];
-              httpLibsToInstall = [];
+              status = 3;
             }
+            eextLibsToInstall = [];
+            httpLibsToInstall = [];
+            $('.EEXT-toremove').remove();
+            EEXT.isWorking(false);
           }, 1000); // Hopefully the extensions are added by now.
         });
       };
@@ -455,13 +457,12 @@
         $('.EEXT-maininstall').text('INSTALL ' + EEXT.totalInstalls);
 
         $('#EEXT-CANCEL').click(function () {
-          $('.EEXT-toremove').remove();
-          EEXT.isWorking(false);
+          $('.EEXT-btn').attr('disabled', true);
           callback(0);
         });
         
         $('#EEXT-MAININSTALL').click(function () {
-          $('.EEXT-toremove').remove();
+          $('.EEXT-btn').attr('disabled', true);
           $.each(EEXT.jsToImport, function (i, js) {
             $('body').append(
               $('<script>', {
@@ -470,7 +471,6 @@
               })
             );
           });
-          EEXT.isWorking(false);
           callback(1);
         });
       }

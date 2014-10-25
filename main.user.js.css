@@ -147,7 +147,7 @@
 }
 .EEXT-modal .EEXT-extension .EEXT-head {
   margin: 4px 4px;
-  font-size: 18px;
+  font: 18px "Roboto", sans-serif;
 }
 .EEXT-modal .EEXT-extension .EEXT-head span {
   font-weight: 700;
@@ -341,8 +341,8 @@
   font-size: 10px;
 }
 .EEXT-modal .EEXT-btn:disabled {
-  background: #B25450;
-  border-color: #8C423F;
+  background: #999999;
+  border-color: #707070;
 }
 .EEXT-modal .EEXT-btn.EEXT-install {
   background: #0B61BD;

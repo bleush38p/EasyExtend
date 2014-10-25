@@ -13,8 +13,8 @@
   root.EEXT = {}; // Get it to exist, then we can just use EEXT from now on.
   
   EEXT.init = function () {
-    $('head').append(EEXT.hs.CSS); // I'm using stylish locally to test css
-                                   // that hasn't been synced to GH yet.
+    $('head').append(EEXT.hs.CSS).append(EEXT.hs.FONT);
+    
     EEXT.statusLetter = 'E';
     EEXT.statusColor = EEXT.scs.UNLOADED;
     $('#pagewrapper').append(EEXT.hs.MAIN);
@@ -117,22 +117,40 @@
       
       ext.loadLibs = function (callback) {
         // just for now, EEXT libs only.
+        
+        if (eextLibsToInstall.length === 0 &&
+            httpLibsToInstall.length === 0) {
+          callback();
+          return;
+        }
+        
         EEXT.showInstallWindow(eextLibsToInstall, [], function (success) {
+          
           if (success === 1) {
             isInstalled = true;
             isCanceled = false;
             isFailed = false;
+            $.each(eextLibsToInstall, function(i, o) {
+              eextLibsInstalled.push(o);
+            });
+            $.each(httpLibsToInstall, function(i, o) {
+              httpLibsInstalled.push(o);
+            });
             callback();
           } else if (success === 0) {
             isInstalled = false;
             isCanceled = true;
             isFailed = false;
+            eextLibsToInstall = [];
+            httpLibsToInstall = [];
             callback();
           } else {
             console.warn('Extension import failed: Error ' + success + '.');
             isInstalled = false;
             isCanceled = false;
             isFailed = true;
+            eextLibsToInstall = [];
+            httpLibsToInstall = [];
             callback();
           }
         });
@@ -157,6 +175,7 @@
   EEXT.totalInstalls = 0;
   EEXT.installWindow = 0;
   EEXT.extensionsArea = 0;
+  EEXT.jsToImport = [];
   
   // Let's do some installing!
   EEXT.showInstallWindow = function (eextLibs, httpLibs, callback) {
@@ -164,6 +183,8 @@
       callback(-1);
       return;
     }
+    
+    EEXT.jsToImport = [];
     EEXT.isWorking(true);
     EEXT.installCount = 0;
     EEXT.totalInstalls = eextLibs.length;
@@ -232,31 +253,179 @@
     ).append(
       $('<button>', {
         'class': 'EEXT-install EEXT-maininstall EEXT-btn',
-        'text': 'INSTALL (...)',
+        'id': 'EEXT-MAININSTALL',
+        'text': 'LOADING (...)',
         disabled: true
       })
     ).append(
       $('<button>', {
         'class': 'EEXT-nh EEXT-install EEXT-danger EEXT-tf EEXT-btn',
+        'id': 'EEXT-INSTALLPROJ',
         'text': 'Always For Proj',
         disabled: true
       })
     ).append(
       $('<button>', {
         'class': 'EEXT-nh EEXT-install EEXT-danger EEXT-tf EEXT-btn',
+        'id': 'EEXT-INSTALLUSR',
         'text': 'Always For User',
         disabled: true
       })
     ).append(
       $('<button>', {
         'class': 'EEXT-cancel EEXT-btn',
+        'id': 'EEXT-CANCEL',
         'text': 'Cancel',
         disabled: true
       })
     );
+    
     $('body').append(EEXT.installWindow);
+    
+    $('.EEXT-maininstall').text(
+      'LOADING (' + (EEXT.totalInstalls - EEXT.installCount) + ')');
+    
     EEXT.extensionsArea = $('.EEXT-extlist');
     
+    $.each(eextLibs, function (i, req) {
+      var j = i + 1;
+      $.getJSON(
+        'http://rawgit.com/bleush38p/EasyExtend/master/extensions/' +
+        req + '.manifest.json'
+      ).done(function (data) {
+        if (typeof data.permissions === 'undefined')
+          data.permissions = [];
+        EEXT.extensionsArea.append(
+          $('<input>', {
+            'class': 'EEXT-extvs EEXT-extv' + j,
+            'id': 'EEXT-extv' + j,
+            'type': 'checkbox'
+          })
+        ).append(
+          $('<label>', {
+            'class': 'EEXT-extv' + j + 'l',
+            'for': 'EEXT-extv' + j
+          }).append(
+            $('<div>', {
+              'class': 'EEXT-extension',
+              'id': 'EEXT-extno' + j
+            }).append(
+              $('<div>', {
+                'class': 'EEXT-head'
+              }).append(
+                $('<span>', {
+                  text: data.name
+                })
+              ).append(
+                ' by '
+              ).append(
+                $('<a>', {
+                  'class': 'EEXT-pname',
+                  'text': data.author[0],
+                  'href': data.author[1],
+                  'target': '_blank'
+                })
+              ).append(
+                $('<span>', {
+                  'class': 'EEXT-p-count',
+                  'text': data.permissions.length ? 
+                    data.permissions.length : ''
+                })
+              )
+            ).append(
+              $('<div>', {
+                'class': 'EEXT-body'
+              }).append(
+                $('<span>', {
+                  text: data.desc
+                })
+              )
+            )
+          )
+        );
+        if (data.permissions.length)
+          $('#EEXT-extno' + j).append(
+            $('<div>', {
+              'class': 'EEXT-permissions',
+              'id': 'EEXT-permsno' + j,
+              'text': 'This extension is allowed:'
+            })
+          );
+        $.each(data.permissions, function (i, perm) {
+          $('#EEXT-permsno' + j).append(
+            $('<div>', {
+              'class': 'EEXT-permission'
+            }).append(
+              $('<span>', {
+                'text': (typeof perm === 'string'
+                ? EEXT.perms[perm].name
+                : perm.name) + ': '
+              })
+            ).append(
+              typeof perm === 'string'
+              ? EEXT.perms[perm].desc
+              : perm.desc
+            )
+          );
+        });
+        EEXT.jsToImport.push(
+          'http://rawgit.com/bleush38p/EasyExtend/master/extensions/' +
+          data.js[0]);
+        EEXT.checkLoadFinished(callback);
+      }).fail(function (jqxhr, textStatus, error) {
+        var err = textStatus + ', ' + error;
+        console.group('EEXT couldn\'t load an extension!');
+        console.warn('Request failed: ' + err);
+        console.info('Make sure the URL is correct.');
+        console.groupEnd();
+        EEXT.checkLoadFinished(callback, true);
+      });
+    });
+    
+  };
+  
+  EEXT.installFailed = 0;
+  EEXT.checkLoadFinished = function(callback, failed) {
+    if (failed) {
+      EEXT.installFailed = true;
+    }
+    EEXT.installCount++;
+    if (EEXT.installCount === EEXT.totalInstalls) {
+      if (EEXT.installFailed) {
+        EEXT.installFailed = false;
+        $('#EEXT-CANCEL').click(function(){
+          $('.EEXT-toremove').remove();
+          callback(-2);
+          EEXT.isWorking(false);
+        }).removeAttr('disabled');
+        $('#EEXT-MAININSTALL')
+          .text('FAILED!')
+          .addClass('.EEXT-danger');
+      } else {
+        $('.EEXT-btn').removeAttr('disabled');
+        $('.EEXT-maininstall').text('INSTALL ' + EEXT.totalInstalls);
+
+        $('#EEXT-CANCEL').click(function() {
+          $('.EEXT-toremove').remove();
+          EEXT.isWorking(false);
+          callback(0);
+        });
+        
+        $('#EEXT-MAININSTALL').click(function() {
+          $('.EEXT-toremove').remove();
+          $.each(EEXT.jsToImport, function(i, js) {
+            $('body').append(
+              $('<script>', {
+                'type': 'text/javascript',
+                'src': js
+              })
+            );
+          });
+          EEXT.isWorking(false);
+          callback(1);
+        });
+      }
+    }
   };
   
   // Quick Access
@@ -286,6 +455,14 @@
         return false;
       }
     else return $('.EEXT-main').hasClass('EEXT-loading');
+  };
+  
+  // PERMISSIONS
+  EEXT.perms = {
+    INTERNETACCESS: {
+      name: 'Full internet access',
+      desc: 'Access the internet in an unrestricted manner.'
+    }
   };
   
   // Status color/letter
@@ -328,6 +505,12 @@
       rel: 'stylesheet',
       type: 'text/css',
       href: 'http://rawgit.com/bleush38p/EasyExtend/master/main.user.js.css'
+    }),
+    
+    FONT: $('<link>', {
+      rel: 'stylesheet',
+      type: 'text/css',
+      href: 'http://fonts.googleapis.com/css?family=Roboto:400,400italic,700,700italic'
     }),
     
     MAIN: $('<div>', {

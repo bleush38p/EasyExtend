@@ -12,6 +12,8 @@
   
   var descriptor = {
     blocks: [
+      ['b', 'EEXT/data ready?', 'ready'],
+      ['-'],
       [' ', 'set %s to %s', 'storedata', 'name', '0'],
       ['r', '%s', 'fetchdata', 'name'],
       [' ', 'delete %s', 'removedata', 'name'],
@@ -27,6 +29,8 @@
     },
     url: 'https://github.com/bleush38p/EasyExtend'
   };
+  
+  ext.ready = function () {return true;};
   
   ext.storedata = function (key, val) {
     EEXT.db.set('EEXTStore-' + EEXT.projectInfo.id + '-' + key, val);

@@ -1,4 +1,4 @@
-// == storage.js ==
+// == data.js ==
 // (c) 2014 bleush38p
 // made with <3 for Scratch EasyExtend:
 // github.com/bleush38p/EasyExtend

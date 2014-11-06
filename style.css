@@ -75,12 +75,10 @@ strong {
   font-size: 80px;
   font-weight: 700;
   color: #E5E5E5;
-  animation: fade-in 1s 0.5s ease;
 }
 .subtitle {
   top: calc(40% + 80px);
   font-size: 22px;
-  animation: fade-in 1s 1s ease;
   width: 100%;
   text-align: center;
   line-height: 50px;
@@ -108,7 +106,6 @@ a:hover {
   padding: 13px;
   bottom: -30px;
   transition: all 0.5s ease;
-  animation: fade-in 2s 2s ease;
 }
 .page-landing .footer {
   bottom: 0;
@@ -131,12 +128,10 @@ a:hover {
   transition: all 1s ease;
 }
 
-.content.start {
-  animation: fade-in 2s 2s ease;
-}
-
 .page-landing .content {
   top: calc(100% - 40px);
+  min-height: 40px;
+  height: 40px;
 }
 
 .body-text {
@@ -228,11 +223,4 @@ strong {
 
 .body-text>:first-child {
   margin-top: 0;
-}
-
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
 }

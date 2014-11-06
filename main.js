@@ -5,25 +5,21 @@ var site = {
     'start',
     'faq',
     'exts',
-    'dev'
+    'dev',
+    'ts'
   ],
   resources: {
-    start: 'pages/start.md',
+    start: 'pages/quickstart.md',
     faq: 'pages/faq.md',
-    dev: 'pages/dev.md',
-    exts: 'pages/exts.md'
+    dev: 'pages/developers.md',
+    exts: 'pages/extensions.md',
+    ts: 'pages/troubleshoot.md'
   }
 };
 
 site.start = function () {
   
-  setTimeout(site.update, 2000);
-  
-  $('[data-change-page]').click(function(){
-    if (site.changingPage) return false;
-    site.changingPage = true;
-    setTimeout(site.update, 100)
-  });
+  setTimeout(site.update, 100);
   
   $(window).on('popstate', site.update);
 };

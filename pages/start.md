@@ -1,2 +1,0 @@
-EasyExtend Quick Start Guide
-============================

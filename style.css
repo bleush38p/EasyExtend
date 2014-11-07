@@ -50,6 +50,7 @@ nav li.right {
 nav li a {
   display: inline-block;
   padding: 0 12px;
+  margin: 0;
   height: 40px;
   line-height: 40px;
   color: #A8A8A8;

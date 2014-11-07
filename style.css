@@ -81,7 +81,6 @@ strong {
   font-size: 22px;
   width: 100%;
   text-align: center;
-  line-height: 50px;
 }
 .subtitle a {
   margin: 10px;
@@ -130,7 +129,6 @@ a:hover {
 
 .page-landing .content {
   top: calc(100% - 40px);
-  min-height: 40px;
   height: 40px;
 }
 
@@ -223,4 +221,74 @@ strong {
 
 .body-text>:first-child {
   margin-top: 0;
+}
+
+
+@media (max-width: 800px) {
+  .content {
+    left: 0;
+    transform: none;
+    width: 100%;
+  }
+  .fleft {
+    left: 0;
+  }
+  .fright {
+    right: 0;
+  }
+  nav ul {
+    left: 0;
+    right: 0;
+  }
+}
+@media (max-width: 650px) {
+  .body-text {
+    font-size: 14px;
+  }
+  .footer {
+    font-size: 12px;
+  }
+  .title {
+    font-size: 60px;
+    position: static;
+    transform: none;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  .subtitle {
+    top: calc(40% + 80px);
+    position: static;
+    transform: none;
+    text-align: center;
+  }
+  .subtitle a {
+    display: block;
+    padding: 5px;
+    margin-bottom: -5px;
+  }
+  nav ul li {
+    display: none;
+  }
+  nav ul li:first-child {
+    display: block;
+  }
+  nav ul li:first-child a {
+    position: absolute;
+    display: block;
+    left: 0;
+    right: 0;
+  }
+}
+@media (max-width: 400px) {
+  .footer {
+    font-size: 10px;
+  }
+  .page-landing .footer {
+    bottom: -4px;
+  }
+  .page-landing .content {
+    top: calc(100% - 30px);
+    height: 30px;
+  }
 }

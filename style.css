@@ -224,6 +224,10 @@ strong {
 }
 
 
+.na {
+  transition: none;
+}
+
 @media (max-width: 800px) {
   .content {
     left: 0;

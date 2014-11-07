@@ -18,13 +18,13 @@ var site = {
 };
 
 site.start = function () {
-  
   setTimeout(site.update, 100);
   
   $(window).on('popstate', site.update);
 };
 
 site.update = function () {
+  $('.na').removeClass('na');
   var hash = document.location.hash;
   var pageindex = $.inArray(hash.substr(1), site.pages)
   site.page = hash.substr(1);

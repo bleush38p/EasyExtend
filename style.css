@@ -93,6 +93,8 @@ a {
   color: #D12300;
   text-decoration: none;
   transition: all 0.3s ease;
+  padding: 0 2px;
+  margin: 0 -2px;
 }
 a:hover {
   background: #D12300;

@@ -163,7 +163,7 @@
   padding-left: 2px;
   background: rgba(0, 0, 0, 0.1);
   height: 28px;
-  overflow: scroll;
+  overflow: auto;
 }
 .EEXT-modal .EEXT-extension .EEXT-permissions {
   font: 700 italic 12px "Roboto", sans-serif;

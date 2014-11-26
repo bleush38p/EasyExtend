@@ -1,4 +1,4 @@
-EasyExtend Quick Start Guide
+[❮](#guides) EasyExtend Quick Start Guide
 ============================
 This guide will help you get started using EasyExtend.
 
@@ -24,3 +24,7 @@ It's time to make sure everything's working! Open any Scratch Project page [(lik
 If you can't see the button, check the [troubleshooting](#ts) page for some tips.
 
 Try pressing the button. If the letter turns green, you're all good! You can look for the importer blocks in the "more blocks" category. If it turns red, or doesn't change at all, head over to the [troubleshooting](#ts) page to see what went wrong.
+
+What next?
+----------
+Now you're ready to create your own project with EasyExtend! Learn to [create your first project](#guides/firstproj) or browse some of the other [guides](#guides).

@@ -58,7 +58,7 @@ nav li a {
 nav li:first-child a{
   color: #D12300;
 }
-nav li a:hover {
+nav li a:hover, nav li a:active {
   color: #E5E5E5;
 }
 

@@ -3,17 +3,27 @@ var site = {
   page: 'landing',
   pages: [
     'start',
+    'guides',
+    'guides/start',
+    'guides/firstproj',
     'faq',
     'exts',
     'dev',
+    'dev/manifest',
+    'dev/submit',
     'ts'
   ],
   resources: {
     start: 'pages/quickstart.md',
+    guides: 'pages/guides/index.md',
+    'guides/firstproj': 'pages/guides/firstproject.md',
+    'guides/start': 'pages/guides/quickstart.md',
     faq: 'pages/faq.md',
-    dev: 'pages/developers.md',
     exts: 'pages/extensions.md',
-    ts: 'pages/troubleshoot.md'
+    dev: 'pages/developers/index.md',
+    'dev/manifest': 'pages/developers/manifest.md',
+    'dev/submit': 'pages/developers/submit.md',
+    ts: 'pages/troubleshoot.md',
   }
 };
 

@@ -571,7 +571,7 @@
     NOEXTENSIONSJSON: {
       title: 'EasyExtend couldn\'t get the list of extensions.',
       info: 'In order to work, EasyExtend has to connect to github (or rather, rawgit) to download the list of EEXT extensions.',
-      sugg: 'Make sure that you are able to connect to rawgit.com. You may have to disable a firewall of change proxy settings.'
+      sugg: 'Make sure that you are able to connect to rawgit.com. You may have to disable a firewall or change proxy settings.'
     }
   };
   

@@ -3,7 +3,7 @@
 // made with <3 for Scratch EasyExtend:
 // github.com/bleush38p/EasyExtend
 
-(function(ext){
+(function (ext) {
   ext._shutdown = function () {};
   
   ext._getStatus = function () {

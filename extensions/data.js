@@ -3,7 +3,7 @@
 // made with <3 for Scratch EasyExtend:
 // github.com/bleush38p/EasyExtend
 
-(function(ext){
+(function (ext) {
   ext._shutdown = function () {};
   
   ext._getStatus = function () {
@@ -20,9 +20,7 @@
       ['-'],
       [' ', 'set %s to %s for this creator', 'storeuserdata', 'name', '0'],
       ['r', '%s for this creator', 'fetchuserdata', 'name'],
-      [' ', 'delete %s for this creator', 'removeuserdata', 'name'],
-      ['-'],
-      ['b', '%m.bool', 'bool', 'true']
+      [' ', 'delete %s for this creator', 'removeuserdata', 'name']
     ],
     menus: {
       bool: ['true', 'false']
@@ -30,7 +28,7 @@
     url: 'https://github.com/bleush38p/EasyExtend'
   };
   
-  ext.ready = function () {return true;};
+  ext.ready = function () { return true; };
   
   ext.storedata = function (key, val) {
     EEXT.db.set('EEXTStore-' + EEXT.projectInfo.id + '-' + key, val);
@@ -51,10 +49,6 @@
   ext.removeuserdata = function (key) {
     EEXT.db.remove('EEXTStore-' + EEXT.projectInfo.creator + '-' + key);
   };
-  
-  ext.bool = function (m) {
-    return !!(m === 'true')
-  }
   
   ScratchExtensions.register('EEXT/data', descriptor, ext);
 }({}));

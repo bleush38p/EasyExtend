@@ -1,0 +1,13 @@
+{
+  "name": "EEXT/math",
+  "author": [
+    "EEXT",
+    "http://github.com/bleush38p/EasyExtend"
+  ],
+  "version": "1.0",
+  "js": [
+    "math.js"
+  ],
+  "desc": "Adds new, advanced mathematical ability to Scratch.",
+  "permissions": []
+}

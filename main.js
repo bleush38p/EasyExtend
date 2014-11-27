@@ -21,7 +21,7 @@ var site = {
     'guides/start': 'pages/guides/quickstart.md',
     faq: 'pages/faq.md',
     exts: 'pages/extensions/index.md',
-    'exts/EEXT/data': 'pages/extensions/EEXT/data.md',
+    'exts/EEXT/data': 'pages/extensions/eext/data.md',
     dev: 'pages/developers/index.md',
     'dev/manifest': 'pages/developers/manifest.md',
     'dev/submit': 'pages/developers/submit.md',

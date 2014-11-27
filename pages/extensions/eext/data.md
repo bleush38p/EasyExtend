@@ -7,25 +7,25 @@ Adds ability for Scratch to save data which persists by project and by user. Mul
 Store data which stays on your computer even after the project has stopped.
 
 ## Blocks
-#### ![<EEXT/data ready?>](/pages/extensions/eext/data/block0.png "<EEXT/data ready?>")
+#### ![<EEXT/data ready?>](pages/extensions/eext/data/block0.png "<EEXT/data ready?>")
 *boolean* — reports true once the extension has been loaded.
 
-#### ![[set [] to []]](/pages/extensions/eext/data/block1.png "[set [] to []]")
+#### ![[set [] to []]](pages/extensions/eext/data/block1.png "[set [] to []]")
 *stack* — sets a variable with a given name to a specific value, which will remain set until the variable is deleted by the project or the user, even in a new session.
 
-#### ![([])](/pages/extensions/eext/data/block2.png "([])")
+#### ![([])](pages/extensions/eext/data/block2.png "([])")
 *reporter* — reports the value of the variable specified or `0` if undefined.
 
-#### ![[delete []]](/pages/extensions/eext/data/block3.png "[delete []]")
+#### ![[delete []]](pages/extensions/eext/data/block3.png "[delete []]")
 *stack* — removes the definition of the specified variable, deleting it from storage.
 
-#### ![[set [] to [] for this creator]](/pages/extensions/eext/data/block4.png "[set [] to [] for this creator]")
+#### ![[set [] to [] for this creator]](pages/extensions/eext/data/block4.png "[set [] to [] for this creator]")
 *stack* — sets a variable with a given name to a specific value, which will remain set until the variable is deleted by the project or the user, even in a new session, and will report that value for any projects made by that creator.
 
-#### ![([] for this creator)](/pages/extensions/eext/data/block5.png "([] for this creator)")
+#### ![([] for this creator)](pages/extensions/eext/data/block5.png "([] for this creator)")
 *reporter* — reports the value of the project-creator-wide variable specified or `0` if undefined.
 
-#### ![[delete [] for this creator]](/pages/extensions/eext/data/block6.png "[delete [] for this creator]")
+#### ![[delete [] for this creator]](pages/extensions/eext/data/block6.png "[delete [] for this creator]")
 *stack* — removes the definition of the specified project-creator-wide variable, deleting it from storage.
 
 ## Additional Details

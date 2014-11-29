@@ -34,8 +34,8 @@
       return;
     }
     
-    $.getJSON(
-        'http://rawgit.com/bleush38p/EasyExtend/master/extensions.json'
+    EEXT.getJSON(
+      'http://rawgit.com/bleush38p/EasyExtend/master/extensions.json'
     ).done(function (data) {
       
       var ext = {};
@@ -340,7 +340,7 @@
     
     $.each(eextLibs, function (i, req) {
       var j = i + 1;
-      $.getJSON(
+      EEXT.getJSON(
         'http://rawgit.com/bleush38p/EasyExtend/master/extensions/' +
         req + '.manifest.json'
       ).done(function (data) {
@@ -485,18 +485,6 @@
   
   // Quick Access
   
-  EEXT.db = {
-    set: function (key, val) {
-      localStorage[key] = JSON.stringify(val);
-    },
-    get: function (key) {
-      return JSON.parse(localStorage[key]);
-    },
-    remove: function (key) {
-      delete localStorage[key];
-    }
-  };
-  
   EEXT.projectInfo = Scratch.INIT_DATA.PROJECT.model;
   
   EEXT.scratchLoaded = function () {
@@ -602,6 +590,27 @@
         'class': 'EEXT-loader EEXT-invis'
       })
     )
+  };
+  
+  // Helper functions - available to extensions, yay!
+  EEXT.db = {
+    set: function (key, val) {
+      localStorage[key] = JSON.stringify(val);
+    },
+    get: function (key) {
+      return JSON.parse(localStorage[key]);
+    },
+    remove: function (key) {
+      delete localStorage[key];
+    }
+  };
+  
+  EEXT.getJSON = function (url) {
+    return $.ajax({
+      dataType: 'json',
+      url: url,
+      crossDomain: true
+    });
   };
   
   // And lastly, start it all up.

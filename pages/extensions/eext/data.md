@@ -29,6 +29,6 @@ Store data which stays on your computer even after the project has stopped.
 *stack* — removes the definition of the specified project-creator-wide variable, deleting it from storage.
 
 ## Additional Details
-* Detectable: yes
+* Detectable: yes (direct)
 * js: [extensions/data.js](https://github.com/bleush38p/EasyExtend/blob/master/extensions/data.js) [(raw)](https://github.com/bleush38p/EasyExtend/raw/master/extensions/data.js)
 * manifest: [extensions/data.manifest.json](https://github.com/bleush38p/EasyExtend/blob/master/extensions/data.manifest.json) [(raw)](https://github.com/bleush38p/EasyExtend/raw/master/extensions/data.manifest.json)

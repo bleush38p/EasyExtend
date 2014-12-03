@@ -6,11 +6,11 @@
 // @description  Easily and safely adds custom extensions to Scratch projects.
 // @include    http://scratch.mit.edu/projects/*
 // @copyright  2014+, bleush38p / jTron
-// @grant          none
+// @grant      none
 // ==/UserScript==
 
 (function ($, root) {
-  root.EEXT = {}; // Get it to exist, then we can just use EEXT from now on.
+  root.EEXT = {};
   
   EEXT.mainButton = [];
   EEXT.init = function () {
@@ -20,8 +20,19 @@
     EEXT.statusColor = EEXT.scs.UNLOADED;
     $('#pagewrapper').append(EEXT.hs.MAIN);
     EEXT.mainButton = $('.EEXT-main');
+    
+    // SETTINGS INIT STUFF
+    if (!EEXT.db.get('s_settings_key')) EEXT.reset();
+    if (EEXT.db.get('s_autoupdate')) EEXT.checkUpdates();
   };
   
+  EEXT.reset = function (reload) {
+    EEXT.db.set('s_settings_key', true);
+    EEXT.db.set('s_autoupdate', true);
+  };
+  
+  EEXT.checkUpdates = function () {};
+    
   EEXT.load = function () {
     EEXT.isWorking(true);
     
@@ -38,17 +49,15 @@
       'http://rawgit.com/bleush38p/EasyExtend/master/extensions.json'
     ).done(function (data) {
       
-      var ext = {};
+      var ext = {}, status = 0;
       
       // This will make sure this function works even if the extension's
       // already been installed.
-      ScratchExtensions.unregister('EEXT/importer'); 
+      ScratchExtensions.unregister('EEXT/importer');
       
       console.info('[EEXT] Inserting EEXT/importer...');
       
       ext._shutdown = function () {};
-      
-      var status = 0; 
       
       ext._getStatus = function () {
         return [{status: 2, msg: 'Ready, though no libraries are installed yet.'},
@@ -106,7 +115,7 @@
         }
         return false;
       };
-      ext.isReady = function () {return true};
+      ext.isReady = function () {return true; };
       
       ext.onceInstalled = function () {
         if (isInstalledNow) {
@@ -129,24 +138,22 @@
         }
         return false;
       };
-      ext.isInstalled   = function () {return isInstalled  ;};
-      ext.isCanceled    = function () {return isCanceled   ;};
-      ext.isFailed      = function () {return isFailed     ;};
+      ext.isInstalled = function () {return isInstalled; };
+      ext.isCanceled = function () {return isCanceled; };
+      ext.isFailed = function () {return isFailed; };
       
       ext.addEEXTLib = function (libname) {
         if (!($.inArray(libname, eextLibsToInstall) === -1 &&
               $.inArray(libname, eextLibsInstalled) === -1 &&
               $.inArray(libname, descriptor.menus.liblist) !== -1) ||
-           EEXT.isWorking())
-          return;
+           EEXT.isWorking()) return;
         eextLibsToInstall.push(libname);
       };
       ext.addHTTPLib = function (liburi) {
-        if (!($.inArray(libname, httpLibsToInstall) === -1 &&
-              $.inArray(libname, httpLibsInstalled) === -1 &&
+        if (!($.inArray(liburi, httpLibsToInstall) === -1 &&
+              $.inArray(liburi, httpLibsInstalled) === -1 &&
               liburi.slice(-14) === '.mainfest.json') ||
-           EEXT.isWorking())
-          return;
+           EEXT.isWorking()) return;
         httpLibsToInstall.push(liburi);
       };
       
@@ -344,8 +351,7 @@
         'http://rawgit.com/bleush38p/EasyExtend/master/extensions/' +
         req + '.manifest.json'
       ).done(function (data) {
-        if (typeof data.permissions === 'undefined')
-          data.permissions = [];
+        if (typeof data.permissions === 'undefined') data.permissions = [];
         EEXT.extensionsArea.append(
           $('<input>', {
             'class': 'EEXT-extvs EEXT-extv' + j,
@@ -379,8 +385,7 @@
               ).append(
                 $('<span>', {
                   'class': 'EEXT-p-count',
-                  'text': data.permissions.length ? 
-                    data.permissions.length : ''
+                  'text': data.permissions.length || ''
                 })
               )
             ).append(
@@ -595,13 +600,14 @@
   // Helper functions - available to extensions, yay!
   EEXT.db = {
     set: function (key, val) {
-      localStorage[key] = JSON.stringify(val);
+      localStorage['_e_' + key] = JSON.stringify(val);
     },
     get: function (key) {
-      return JSON.parse(localStorage[key]);
+      return (typeof localStorage['_e_' + key] === 'undefined') ? undefined :
+        JSON.parse(localStorage['_e_' + key]);
     },
     remove: function (key) {
-      delete localStorage[key];
+      delete localStorage['_e_' + key];
     }
   };
   

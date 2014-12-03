@@ -1,0 +1,9 @@
+{
+  "main": {
+    "newest": "0.1.001",
+    "build": 1412030200001001,
+    // 14120302 YYMMDDHH date (GMT) // 0 bigversion
+    // 00 major // 01 minor // 001 build 
+    "url": "https://rawgit.com/bleush38p/EasyExtend/master/main.user.js"
+  }
+}

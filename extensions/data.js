@@ -31,23 +31,23 @@
   ext.ready = function () { return true; };
   
   ext.storedata = function (key, val) {
-    EEXT.db.set('EEXTStore-' + EEXT.projectInfo.id + '-' + key, val);
+    EEXT.db.set('eext-data_' + EEXT.projectInfo.id + '-' + key, val);
   };
   ext.fetchdata = function (key) {
-    return EEXT.db.get('EEXTStore-' + EEXT.projectInfo.id + '-' + key);
+    return EEXT.db.get('eext-data_' + EEXT.projectInfo.id + '-' + key);
   };
   ext.removedata = function (key) {
-    EEXT.db.remove('EEXTStore-' + EEXT.projectInfo.id + '-' + key);
+    EEXT.db.remove('eext-data_' + EEXT.projectInfo.id + '-' + key);
   };
   
   ext.storeuserdata = function (key, val) {
-    EEXT.db.set('EEXTStore-' + EEXT.projectInfo.creator + '-' + key, val);
+    EEXT.db.set('eext-data_' + EEXT.projectInfo.creator + '-' + key, val);
   };
   ext.fetchuserdata = function (key) {
-    return EEXT.db.get('EEXTStore-' + EEXT.projectInfo.creator + '-' + key);
+    return EEXT.db.get('eext-data_' + EEXT.projectInfo.creator + '-' + key);
   };
   ext.removeuserdata = function (key) {
-    EEXT.db.remove('EEXTStore-' + EEXT.projectInfo.creator + '-' + key);
+    EEXT.db.remove('eext-data_' + EEXT.projectInfo.creator + '-' + key);
   };
   
   ScratchExtensions.register('EEXT/data', descriptor, ext);

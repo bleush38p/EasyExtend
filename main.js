@@ -13,7 +13,8 @@ var site = {
     'dev',
     'dev/manifest',
     'dev/submit',
-    'ts'
+    'ts',
+    'us/update'
   ],
   resources: {
     start: 'pages/quickstart.md',
@@ -28,6 +29,7 @@ var site = {
     'dev/manifest': 'pages/developers/manifest.md',
     'dev/submit': 'pages/developers/submit.md',
     ts: 'pages/troubleshoot.md',
+    'us/update': 'pages/external/userstyle-update.md'
   }
 };
 

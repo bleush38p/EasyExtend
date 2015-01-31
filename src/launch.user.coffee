@@ -16,7 +16,7 @@
     return $ ->
       $('a[href="#guides/start"]').text('guides').attr 'href', '#guides'
 
-  version = '0.0.1.24'
+  version = '0.0.1.25'
 
   root.EEXT =
     getJSON: (url) -> # this fixes things when there's cloud data
@@ -98,7 +98,7 @@
       console.log 'Warning: Reloading the page will reset options.'
     update: (force) ->
       if options.verbose then console.debug "Requesting #{EEXT.url}update.json"
-      EEXT.getJSON('#{EEXT.url}update.json')
+      EEXT.getJSON("#{EEXT.url}update.json")
         .done( (data) ->
           if data.version isnt version
             if !force? then return window.open "#{EEXT.url}#{data.update}"

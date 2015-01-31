@@ -16,7 +16,7 @@
     return $ ->
       $('a[href="#guides/start"]').text('guides').attr 'href', '#guides'
 
-  version = '0.0.1.23'
+  version = '0.0.1.24'
 
   root.EEXT =
     getJSON: (url) -> # this fixes things when there's cloud data
@@ -29,7 +29,7 @@
     localStorage.EEXTlauncherOptions = JSON.stringify
       usecustom: no
       customurl: ''
-      branch: 'master'
+      branch: 'rewrite-dist'
       autoupdate: yes
       verbose: no
       https: no
@@ -60,7 +60,7 @@
         console.log """
           usecustom: #{options.usecustom} (false) whether to use customurl as the path to online EEXT resources
           customurl: "#{options.customurl}" ("") the url to use as the path to online EEXT resources (see https://bleush38p.github.io/EasyExtend/#launcher/customurl)
-          branch: "#{options.branch}" ("master") the github branch or tag to use for online EEXT resources (see https://bleush38p.github.io/EasyExtend/#launcher/branch)
+          branch: "#{options.branch}" ("rewrite-dist") the github branch or tag to use for online EEXT resources (see https://bleush38p.github.io/EasyExtend/#launcher/branch)
           autoupdate: #{options.autoupdate} (true) whether to check for updates automatically
           verbose: #{options.verbose} (false) whether EEXT should spew debug info all over the place
           https: #{options.https} (false) whether to use https to load online resources
@@ -88,7 +88,7 @@
       localStorage.EEXTlauncherOptions = JSON.stringify
         usecustom: no
         customurl: ''
-        branch: 'master'
+        branch: 'rewrite-dist'
         autoupdate: yes
         verbose: no
       options = JSON.parse localStorage.EEXTlauncherOptions

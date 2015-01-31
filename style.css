@@ -192,6 +192,11 @@ strong {
   margin-bottom: 16px;
 }
 
+.body-text ul {
+  list-style: inside disc;
+  margin-left: 1em;
+}
+
 .body-text code {
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
   padding: 0.2em;

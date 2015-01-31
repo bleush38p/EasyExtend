@@ -1,0 +1,27 @@
+{
+  "name": "EasyExtend",
+  "version": "0.0.1",
+  "description": "Easily and safely adds custom extensions to Scratch projects",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bleush38p/EasyExtend.git"
+  },
+  "keywords": [
+    "scratch"
+  ],
+  "author": "bleush38p / jTron",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bleush38p/EasyExtend/issues"
+  },
+  "homepage": "https://github.com/bleush38p/EasyExtend",
+  "dependencies": {
+    "grunt": "0.4.5",
+    "grunt-contrib-coffee": "^0.12.0",
+    "grunt-contrib-sass": "^0.8.1",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}

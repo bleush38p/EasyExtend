@@ -23,5 +23,8 @@
     "grunt-contrib-coffee": "^0.12.0",
     "grunt-contrib-sass": "^0.8.1",
     "grunt-contrib-watch": "^0.6.1"
+  },
+  "devDependencies": {
+    "grunt-devserver": "^0.6.0"
   }
 }

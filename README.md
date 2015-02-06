@@ -3,6 +3,7 @@ EasyExtend
 
 Userscript friendly easy extension loader for [Scratch 2.0](http://scratch.mit.edu).
 
+***EasyExtend is being rewritten. Check it out at [rewrite](https://github.com/bleush38p/EasyExtend/tree/rewrite)***
 
 ## Installation
 

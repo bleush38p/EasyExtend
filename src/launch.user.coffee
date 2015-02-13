@@ -16,7 +16,7 @@
     return $ ->
       $('a[href="#guides/start"]').text('guides').attr 'href', '#guides'
 
-  version = '0.0.1.25'
+  version = '0.0.1.26'
 
   root.EEXT =
     getJSON: (url) -> # this fixes things when there's cloud data
@@ -100,15 +100,14 @@
       if options.verbose then console.debug "Requesting #{EEXT.url}update.json"
       EEXT.getJSON("#{EEXT.url}update.json")
         .done( (data) ->
+          if force then return; # TODO: on-screen update notification
           if data.version isnt version
-            if !force? then return window.open "#{EEXT.url}#{data.update}"
-            if !force then return yes
-            window.open "#{EEXT.url}#{data.update}"
-          else return no
-
-
+            if !force then console.log 'An update is available!'; return
+            # TODO: on-screen update notification
+          else console.debug 'No update available!' if options.verbose
         ).fail (jqxhr, status, error) ->
           console.error "Request failed: #{status}, #{error}"
+      return
 
   if options.autoupdate then do EEXTlauncher.update
 

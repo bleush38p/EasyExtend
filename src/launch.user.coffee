@@ -2,11 +2,13 @@
 // ==UserScript==
 // @name        EasyExtend
 // @namespace   https://bleush38p.github.io/EasyExtend/
-// @version     0.0.1.0
+// @version     0.0.1.38
 // @description Easily and safely adds custom extensions to Scratch projects.
 // @include     http://scratch.mit.edu/projects/*
+// @include     https://scratch.mit.edu/projects/*
 // @include     https://bleush38p.github.io/EasyExtend/*
 // @copyright   2014-2015, bleush38p / jTron
+// @author      bleush38p / jTron
 // @grant       none
 // ==/UserScript==
 ###
@@ -16,7 +18,51 @@
     return $ ->
       $('a[href="#guides/start"]').text('guides').attr 'href', '#guides'
 
-  version = '0.0.1.26'
+  version = '0.0.1.38'
+
+  # probably temporary
+  $('head').append $("""
+    <style type="text/css" id="EEXTTOREMOVE">
+      .EEXT-notification {
+        position: fixed;
+        right: 50px;
+        top: 50px;
+        max-width: 300px;
+        background: white;
+        padding: 10px;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        opacity: 0.9;
+      }
+      .EEXT-notification button {
+        background: 0;
+        border: 0;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        line-height: 1;
+        padding: 0;
+        height: 12px;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+      .EEXT-notification h1 {
+        font-size: 16px;
+        padding-right: 12px;
+
+      }
+      .EEXT-notification .EEXT-button {
+        display: inline-block;
+        text-transform: uppercase;
+        float: right;
+        padding: 2px 6px 1px 6px;
+        margin-left: 2px;
+      }
+      .EEXT-notification .EEXT-button:hover {
+        text-decoration: none;
+        background-color: rgba(0,0,0,0.2);
+      }
+    </style>
+    """)
 
   root.EEXT =
     getJSON: (url) -> # this fixes things when there's cloud data
@@ -24,6 +70,29 @@
         dataType: 'json'
         url: url
         crossDomain: true
+    notify: (persistant, main, alt, buttons) ->
+      disappear = ->
+        notif.fadeOut 500
+        setTimeout(->
+          do notif.remove
+        , 500)
+      notif = $("""<div class="EEXT-notification">
+                     <button>Close</button>
+                     <h1>#{main}</h1>
+                     <p>#{alt}</p>
+                   </div>""")
+      notif.find('button').click disappear
+      buttons.forEach (button) ->
+        $button = $("<a class=\"EEXT-button\" target=\"_blank\">#{button[0]}</a>")
+        if typeof button[1] is "string"
+          $button.attr("href", button[1])
+          if button[2]? then $button.click disappear
+        else
+          $button.click button[1]
+        notif.append $button
+      $('body').append notif
+      do notif.show
+      if !persistant then setTimeout(disappear, 10 * 1000);
 
   if localStorage.EEXTlauncherOptions is undefined
     localStorage.EEXTlauncherOptions = JSON.stringify
@@ -32,7 +101,7 @@
       branch: 'rewrite-dist'
       autoupdate: yes
       verbose: no
-      https: no
+      https: no # for now this is the default, we'll see where Scratch goes!
 
   options = JSON.parse localStorage.EEXTlauncherOptions
 
@@ -85,13 +154,7 @@
       localStorage.EEXTlauncherOptions = JSON.stringify options
       console.log 'Reload the page for changes to take effect.'
     reset: ->
-      localStorage.EEXTlauncherOptions = JSON.stringify
-        usecustom: no
-        customurl: ''
-        branch: 'rewrite-dist'
-        autoupdate: yes
-        verbose: no
-      options = JSON.parse localStorage.EEXTlauncherOptions
+      localStorage.removeItem 'EEXTlauncherOptions'
       console.log 'Reload the page for changes to take effect.'
     unset: ->
       localStorage.removeItem 'EEXTlauncherOptions'
@@ -100,25 +163,31 @@
       if options.verbose then console.debug "Requesting #{EEXT.url}update.json"
       EEXT.getJSON("#{EEXT.url}update.json")
         .done( (data) ->
-          if force then return; # TODO: on-screen update notification
+          if force then return update data
           if data.version isnt version
-            if !force then console.log 'An update is available!'; return
-            # TODO: on-screen update notification
+            if force? then console.log "An update is available! (#{data.version}) Run EEXTlauncher.update()"; return
+            update data
           else console.debug 'No update available!' if options.verbose
         ).fail (jqxhr, status, error) ->
           console.error "Request failed: #{status}, #{error}"
       return
+  update = (data) ->
+    EEXT.notify false,
+      "An update to EEXT is available!",
+      "Version #{data.version}. Reload this page after updating.", [["Update", "#{EEXT.url}#{data.update}", true], ["Release Notes", ""]]
 
   if options.autoupdate then do EEXTlauncher.update
 
   if options.verbose
-    console.debug "EEXT resource url set to #{EEXT.url}" if options.verbose
+    console.debug "EEXT resource url set to #{EEXT.url}"
     console.debug "Loading Angular from #{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js"
     console.debug "Loading EEXT from #{EEXT.url}build/eext.js"
+    console.debug "Loading EEXT css from #{EEXT.url}build/eext.css"
 
   $('body')
-    .append($("""<script type="text/javascript" src="#{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js">"""))
-    .append $ """<script type="text/javascript" src="#{EEXT.url}build/eext.js">"""
+    .append($ """<script type="text/javascript" src="#{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js">""")
+    .append($ """<script type="text/javascript" src="#{EEXT.url}build/eext.js">""")
+    .append $ """<link rel="stylesheet" type="text/css" href="#{EEXT.url}build/eext.css">"""
 
   console.debug "Angular and EEXT were injected successfully and should be loading." if options.verbose
 

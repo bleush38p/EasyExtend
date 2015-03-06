@@ -2,8 +2,11 @@ module.exports = (grunt) ->
   grunt.initConfig
     watch:
       launch:
-        files: ['src/*.coffee']
-        tasks: ['coffee:launch', 'coffee:main']
+        files: ['src/launch.user.coffee']
+        tasks: ['coffee:launch']
+      main:
+        files: ['src/*']
+        tasks: ['coffee:main', 'sass:main']
     coffee:
       launch:
         options:
@@ -13,12 +16,18 @@ module.exports = (grunt) ->
       main:
         files:
           'build/eext.js': 'src/eext.coffee'
+    sass:
+      main:
+        files:
+          'build/eext.css': 'src/eext.scss'
     devserver:
       server: {}
 
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-devserver'
+  grunt.loadNpmTasks 'grunt-contrib-sass'
 
-  grunt.registerTask 'build', ['coffee']
-  grunt.registerTask 'build-serve', ['build', 'devserver']
+  grunt.registerTask 'build', ['coffee', 'sass']
+  grunt.registerTask 'serve', ['devserver']
+  grunt.registerTask 'build-serve', ['build', 'serve']

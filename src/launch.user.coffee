@@ -18,14 +18,14 @@
     return $ ->
       $('a[href="#guides/start"]').text('guides').attr 'href', '#guides'
 
-  version = '0.0.1.39'
+  version = '0.0.1.40'
 
   # probably temporary
   $('head').append $("""
     <style type="text/css" id="EEXTTOREMOVE">
       .EEXT-notification {
         position: fixed;
-        right: 50px;
+        right: 15px;
         top: 50px;
         max-width: 300px;
         background: white;
@@ -72,10 +72,7 @@
         crossDomain: true
     notify: (persistant, main, alt, buttons) ->
       disappear = ->
-        notif.fadeOut 500
-        setTimeout(->
-          do notif.remove
-        , 500)
+        notif.fadeOut 500, -> do $(@).remove
       notif = $("""<div class="EEXT-notification">
                      <button>Close</button>
                      <h1>#{main}</h1>
@@ -83,10 +80,10 @@
                    </div>""")
       notif.find('button').click disappear
       buttons.forEach (button) ->
-        $button = $("<a class=\"EEXT-button\" target=\"_blank\">#{button[0]}</a>")
+        $button = $("<a class=\"EEXT-button\" #{ if button[2]? and button[2] then 'target="_blank"' }>#{button[0]}</a>")
         if typeof button[1] is "string"
           $button.attr("href", button[1])
-          if button[2]? then $button.click disappear
+          if button[3]? and button[3] then $button.click disappear
         else
           $button.click button[1]
         notif.append $button
@@ -172,9 +169,9 @@
           console.error "Request failed: #{status}, #{error}"
       return
   update = (data) ->
-    EEXT.notify false,
+    EEXT.notify yes,
       "An update to EEXT is available!",
-      "Version #{data.version}. Reload this page after updating.", [["Update", "#{EEXT.url}#{data.update}", true], ["Release Notes", ""]]
+      "Version #{data.version}. Reload this page after updating.", [["Update", "#{EEXT.url}#{data.update}", no, yes], ["Release Notes", "https://bleush38p.github.io/EasyExtend/#changelog", yes, no]]
 
   if options.autoupdate then do EEXTlauncher.update
 

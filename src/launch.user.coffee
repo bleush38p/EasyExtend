@@ -18,7 +18,7 @@
     return $ ->
       $('a[href="#guides/start"]').text('guides').attr 'href', '#guides'
 
-  version = '0.0.1.38'
+  version = '0.0.1.39'
 
   # probably temporary
   $('head').append $("""
@@ -180,17 +180,17 @@
 
   if options.verbose
     console.debug "EEXT resource url set to #{EEXT.url}"
-    console.debug "Loading Angular from #{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js"
+    # console.debug "Loading Angular from #{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js"
     console.debug "Loading EEXT from #{EEXT.url}build/eext.js"
     console.debug "Loading EEXT css from #{EEXT.url}build/eext.css"
 
   $('body')
-    .append($ """<script type="text/javascript" src="#{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js">""")
+    # .append($ """<script type="text/javascript" src="#{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js">""")
     .append($ """<script type="text/javascript" src="#{EEXT.url}build/eext.js">""")
     .append $ """<link rel="stylesheet" type="text/css" href="#{EEXT.url}build/eext.css">"""
 
-  console.debug "Angular and EEXT were injected successfully and should be loading." if options.verbose
-
+  # console.debug "Angular and EEXT were injected successfully and should be loading." if options.verbose
+  console.debug "EEXT was injected successfully and should be loading." if options.verbose
   console.log 'EEXTlauncher ran successfully. Type EEXTlauncher._help() for more info.'
 
 ) window, jQuery

@@ -1,7 +1,15 @@
 Changelog & Release Notes
 =========================
 
-**Current version:** EEXTLauncher: *0.0.1.38* | EEXT: *~*
+**Current version:** EEXTLauncher: *0.0.1.40* | EEXT: *~*
+
+## EEXTLauncher 0.0.1.40
+Removed Angular:
+- it's commented out for now, I'm up in the air about using it
+Improved notifications:
+- flipped persistence polarity (so it's right now)
+- handles links better (`target="_blank"` option)
+
 
 ## EEXTLauncher 0.0.1.38
 Notifications, fixed updates:

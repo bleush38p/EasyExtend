@@ -3,7 +3,7 @@
 // ==UserScript==
 // @name        EasyExtend
 // @namespace   https://bleush38p.github.io/EasyExtend/
-// @version     0.0.1.38
+// @version     0.0.1.41
 // @description Easily and safely adds custom extensions to Scratch projects.
 // @include     http://scratch.mit.edu/projects/*
 // @include     https://scratch.mit.edu/projects/*

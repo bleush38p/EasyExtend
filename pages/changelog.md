@@ -1,7 +1,12 @@
 Changelog & Release Notes
 =========================
 
-**Current version:** EEXTLauncher: *0.0.1.40* | EEXT: *~*
+**Current version:** EEXTLauncher: *0.0.1.41* | EEXT: *~*
+
+## EEXTLauncher 0.0.1.41
+- HTTPS support by default
+- Now building in `rewrite`
+- **Will require manual reinstalling!**
 
 ## EEXTLauncher 0.0.1.40
 Removed Angular:

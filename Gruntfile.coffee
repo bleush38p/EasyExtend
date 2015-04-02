@@ -6,7 +6,7 @@ module.exports = (grunt) ->
         tasks: ['coffee:launch']
       main:
         files: ['src/*']
-        tasks: ['coffee:main', 'sass:main']
+        tasks: ['coffee:main', 'sass:main', 'autoprefixer:main']
     coffee:
       launch:
         options:
@@ -20,6 +20,11 @@ module.exports = (grunt) ->
       main:
         files:
           'build/eext.css': 'src/eext.scss'
+    autoprefixer:
+      main:
+        src: 'build/eext.css'
+        options:
+          map: yes
     devserver:
       server: {}
 
@@ -27,7 +32,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-devserver'
   grunt.loadNpmTasks 'grunt-contrib-sass'
+  grunt.loadNpmTasks 'grunt-autoprefixer'
 
-  grunt.registerTask 'build', ['coffee', 'sass']
+  grunt.registerTask 'build', ['coffee', 'sass', 'autoprefixer']
   grunt.registerTask 'serve', ['devserver']
   grunt.registerTask 'build-serve', ['build', 'serve']

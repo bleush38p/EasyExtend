@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name        EasyExtend
 // @namespace   https://bleush38p.github.io/EasyExtend/
-// @version     0.0.1.41
+// @version     0.0.1.42
 // @description Easily and safely adds custom extensions to Scratch projects.
 // @include     http://scratch.mit.edu/projects/*
 // @include     https://scratch.mit.edu/projects/*
@@ -12,13 +12,14 @@
 // @grant       none
 // ==/UserScript==
 ###
-((root, $) ->
+((root, $)->
 
   if root.location.host is 'bleush38p.github.io'
     return $ ->
       $('a[href="#guides/start"]').text('guides').attr 'href', '#guides'
 
-  version = '0.0.1.41'
+  version = '0.0.1.42'
+  debug = (m)-> console.debug "[EEXTLauncher] #{m}";0
 
   # probably temporary
   $('head').append $("""
@@ -65,12 +66,12 @@
     """)
 
   root.EEXT =
-    getJSON: (url) -> # this fixes things when there's cloud data
+    getJSON: (url)-> # this fixes things when there's cloud data
       $.ajax
         dataType: 'json'
         url: url
         crossDomain: true
-    notify: (persistant, main, alt, buttons) ->
+    notify: (persistant, main, alt, buttons)->
       disappear = ->
         notif.fadeOut 500, -> do $(@).remove
       notif = $("""<div class="EEXT-notification">
@@ -79,7 +80,7 @@
                      <p>#{alt}</p>
                    </div>""")
       notif.find('button').click disappear
-      buttons.forEach (button) ->
+      buttons.forEach (button)->
         $button = $("<a class=\"EEXT-button\" #{ if button[2]? and button[2] then 'target="_blank"' }>#{button[0]}</a>")
         if typeof button[1] is "string"
           $button.attr("href", button[1])
@@ -121,7 +122,7 @@
     version: ->
       console.log 'EEXTlauncher version ' + version
       EEXTlauncher.update no
-    options: (optionName, value) ->
+    options: (optionName, value)->
       if !optionName?
         console.log """
           usecustom: #{options.usecustom} (false) whether to use customurl as the path to online EEXT resources
@@ -156,19 +157,19 @@
     unset: ->
       localStorage.removeItem 'EEXTlauncherOptions'
       console.log 'Warning: Reloading the page will reset options.'
-    update: (force) ->
-      if options.verbose then console.debug "Requesting #{EEXT.url}update.json"
+    update: (force)->
+      if options.verbose then debug "Requesting #{EEXT.url}update.json"
       EEXT.getJSON("#{EEXT.url}update.json")
-        .done( (data) ->
+        .done( (data)->
           if force then return update data
           if data.version isnt version
             if force? then console.log "An update is available! (#{data.version}) Run EEXTlauncher.update()"; return
             update data
-          else console.debug 'No update available!' if options.verbose
-        ).fail (jqxhr, status, error) ->
+          else debug 'No update available!' if options.verbose
+        ).fail (jqxhr, status, error)->
           console.error "Request failed: #{status}, #{error}"
       return
-  update = (data) ->
+  update = (data)->
     EEXT.notify yes,
       "An update to EEXT is available!",
       "Version #{data.version}. Reload this page after updating.", [["Update", "#{EEXT.url}#{data.update}", no, yes], ["Release Notes", "https://bleush38p.github.io/EasyExtend/#changelog", yes, no]]
@@ -176,18 +177,19 @@
   if options.autoupdate then do EEXTlauncher.update
 
   if options.verbose
-    console.debug "EEXT resource url set to #{EEXT.url}"
-    # console.debug "Loading Angular from #{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js"
-    console.debug "Loading EEXT from #{EEXT.url}build/eext.js"
-    console.debug "Loading EEXT css from #{EEXT.url}build/eext.css"
+    debug "EEXT resource url set to #{EEXT.url}"
+    # debug "Loading Angular from #{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js"
+    debug "Loading EEXT from #{EEXT.url}build/eext.js"
+    debug "Loading EEXT css from #{EEXT.url}build/eext.css"
+    EEXT.verbose = yes
 
   $('body')
     # .append($ """<script type="text/javascript" src="#{if options.https then 'https' else 'http'}://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.11/angular.min.js">""")
     .append($ """<script type="text/javascript" src="#{EEXT.url}build/eext.js">""")
     .append $ """<link rel="stylesheet" type="text/css" href="#{EEXT.url}build/eext.css">"""
 
-  # console.debug "Angular and EEXT were injected successfully and should be loading." if options.verbose
-  console.debug "EEXT was injected successfully and should be loading." if options.verbose
+  # debug "Angular and EEXT were injected successfully and should be loading." if options.verbose
+  debug "EEXT was injected successfully and should be loading." if options.verbose
   console.log 'EEXTlauncher ran successfully. Type EEXTlauncher._help() for more info.'
 
 ) window, jQuery

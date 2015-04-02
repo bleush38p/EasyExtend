@@ -3,7 +3,7 @@
 // ==UserScript==
 // @name        EasyExtend
 // @namespace   https://bleush38p.github.io/EasyExtend/
-// @version     0.0.1.41
+// @version     0.0.1.42
 // @description Easily and safely adds custom extensions to Scratch projects.
 // @include     http://scratch.mit.edu/projects/*
 // @include     https://scratch.mit.edu/projects/*
@@ -14,13 +14,17 @@
 // ==/UserScript==
  */
 (function(root, $) {
-  var options, update, version;
+  var debug, options, update, version;
   if (root.location.host === 'bleush38p.github.io') {
     return $(function() {
       return $('a[href="#guides/start"]').text('guides').attr('href', '#guides');
     });
   }
-  version = '0.0.1.41';
+  version = '0.0.1.42';
+  debug = function(m) {
+    console.debug("[EEXTLauncher] " + m);
+    return 0;
+  };
   $('head').append($("<style type=\"text/css\" id=\"EEXTTOREMOVE\">\n  .EEXT-notification {\n    position: fixed;\n    right: 15px;\n    top: 50px;\n    max-width: 300px;\n    background: white;\n    padding: 10px;\n    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);\n    opacity: 0.9;\n  }\n  .EEXT-notification button {\n    background: 0;\n    border: 0;\n    position: absolute;\n    top: 12px;\n    right: 12px;\n    line-height: 1;\n    padding: 0;\n    height: 12px;\n    font-size: 10px;\n    text-transform: uppercase;\n  }\n  .EEXT-notification h1 {\n    font-size: 16px;\n    padding-right: 12px;\n\n  }\n  .EEXT-notification .EEXT-button {\n    display: inline-block;\n    text-transform: uppercase;\n    float: right;\n    padding: 2px 6px 1px 6px;\n    margin-left: 2px;\n  }\n  .EEXT-notification .EEXT-button:hover {\n    text-decoration: none;\n    background-color: rgba(0,0,0,0.2);\n  }\n</style>"));
   root.EEXT = {
     getJSON: function(url) {
@@ -149,7 +153,7 @@
     },
     update: function(force) {
       if (options.verbose) {
-        console.debug("Requesting " + EEXT.url + "update.json");
+        debug("Requesting " + EEXT.url + "update.json");
       }
       EEXT.getJSON("" + EEXT.url + "update.json").done(function(data) {
         if (force) {
@@ -163,7 +167,7 @@
           return update(data);
         } else {
           if (options.verbose) {
-            return console.debug('No update available!');
+            return debug('No update available!');
           }
         }
       }).fail(function(jqxhr, status, error) {
@@ -178,13 +182,14 @@
     EEXTlauncher.update();
   }
   if (options.verbose) {
-    console.debug("EEXT resource url set to " + EEXT.url);
-    console.debug("Loading EEXT from " + EEXT.url + "build/eext.js");
-    console.debug("Loading EEXT css from " + EEXT.url + "build/eext.css");
+    debug("EEXT resource url set to " + EEXT.url);
+    debug("Loading EEXT from " + EEXT.url + "build/eext.js");
+    debug("Loading EEXT css from " + EEXT.url + "build/eext.css");
+    EEXT.verbose = true;
   }
   $('body').append($("<script type=\"text/javascript\" src=\"" + EEXT.url + "build/eext.js\">")).append($("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + EEXT.url + "build/eext.css\">"));
   if (options.verbose) {
-    console.debug("EEXT was injected successfully and should be loading.");
+    debug("EEXT was injected successfully and should be loading.");
   }
   return console.log('EEXTlauncher ran successfully. Type EEXTlauncher._help() for more info.');
 })(window, jQuery);

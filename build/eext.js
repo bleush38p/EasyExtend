@@ -1,4 +1,6 @@
 (function() {
+  var __slice = [].slice;
+
   if (typeof EEXT === "undefined" || EEXT === null) {
     return console.error("EEXT needs to be launched with the official loader.");
   }
@@ -35,6 +37,7 @@
             tDebug = function(m) {
               return debug("[$button:click] " + m);
             };
+            _this.$button.removeClass('EEXT-error');
             if (_this.loaded === 2) {
               return _this._toggleMenu(tDebug);
             } else {
@@ -51,7 +54,14 @@
       debug = function(m) {
         return pDebug("[_load] " + m);
       };
-      return debug("Ready to load EEXT.");
+      debug("Ready to load EEXT.");
+      if (!this._scratchLoaded(debug)) {
+        debug("Scratch isn't loaded yet or doesn't exist. Canceling load.");
+        this.loaded = -1;
+        this.$button.addClass('EEXT-error');
+        this.notify(false, "Launch failed", "Either there is no flash player on the page or it hasn't loaded yet. " + "<strong>Make sure you wait until the Scratch project is done loading to start EEXT.</strong>", [["OK", "#", false, true]]);
+        return 0;
+      }
     };
     this._doneLoading = function(pDebug) {
       var debug;
@@ -72,6 +82,29 @@
         return pDebug("[_loadExtension] " + m);
       };
     };
+    this._scratchLoaded = function(pDebug) {
+      var debug, e;
+      debug = function(m) {
+        return pDebug("[_scratchLoaded] " + m);
+      };
+      try {
+        return $('#scratch')[0].PercentLoaded() === 100;
+      } catch (_error) {
+        e = _error;
+        return false;
+      }
+    };
+    this._wrap = (function(_this) {
+      return function(name) {
+        return function() {
+          var args;
+          args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+          return _this[name].apply(_this, __slice.call(args).concat([function(m) {
+            return console.debug("[_wrap] " + m);
+          }]));
+        };
+      };
+    })(this);
     return this._init(this.verbose ? function(m) {
       return console.debug("[EEXT] " + m);
     } : function() {});

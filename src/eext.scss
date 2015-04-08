@@ -68,6 +68,14 @@
   font-size: 16px;
   color: #0f8bc0;
   transition: 0.5s ease-out;
+  &.EEXT-error {
+    background: #E70E0E;
+    color: white;
+  }
+  &.EEXT-success {
+    background: #028E00;
+    color: white;
+  }
   &:hover, &:focus {
     outline: 0;
     opacity: 0.8;

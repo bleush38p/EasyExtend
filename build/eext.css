@@ -63,6 +63,12 @@
   color: #0f8bc0;
   -webkit-transition: 0.5s ease-out;
           transition: 0.5s ease-out; }
+  .EEXT-E.EEXT-error {
+    background: #E70E0E;
+    color: white; }
+  .EEXT-E.EEXT-success {
+    background: #028E00;
+    color: white; }
   .EEXT-E:hover, .EEXT-E:focus {
     outline: 0;
     opacity: 0.8; }

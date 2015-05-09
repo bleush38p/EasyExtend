@@ -53,9 +53,10 @@
   }
 }
 .EEXT-E {
-  position: absolute;
+  position: fixed;
+  z-index: 10000;
   top: 4px;
-  right: -32px;
+  left: calc(50% + 478px);
   width: 26px;
   height: 26px;
   padding: 0;
@@ -68,6 +69,7 @@
   font-size: 16px;
   color: #0f8bc0;
   transition: 0.5s ease-out;
+  transition-property: color, background, border;
   &.EEXT-error {
     background: #E70E0E;
     color: white;
@@ -87,5 +89,27 @@
     &:not(:hover) {
       opacity: 0.6;
     }
+  }
+}
+
+.editor .EEXT-E {
+  left: 307px;
+  width: 21px;
+  height: 21px;
+  font-size: 14px;
+  top: 3px;
+}
+.fullscreen .EEXT-E {
+  left: calc(50% + 68vh - 38px);
+  top: 15px;
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  opacity: 0.8;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
+}
+@media (max-height: 600px) {
+  .fullscreen .EEXT-E {
+    left: calc(50% + #{(0.68 * 600px) - 38px});
   }
 }

@@ -12,6 +12,43 @@
     if (this.verbose) {
       console.debug("[EEXT] has been loaded successfully. (version " + version + ")");
     }
+    (function() {
+      var old;
+      old = window.onhashchange || function() {};
+      return window.onhashchange = function(e) {
+        return EEXT._hashChange(e, old);
+      };
+    })();
+    this._hashChange = function(e, old) {
+      var hash;
+      hash = location.hash;
+      $('body')["" + (hash === '#fullscreen' ? 'add' : 'remove') + "Class"]('fullscreen');
+      return old(e);
+    };
+    this._hashChange({}, function() {});
+    this._observe = function(target, options, callback) {
+      var observer;
+      observer = new MutationObserver(callback);
+      observer.observe(target, options);
+      return observer;
+    };
+    this._observe($('#tip-bar')[0], {
+      attributes: true,
+      attributeFilter: ['style']
+    }, function(mutations) {
+      if (!$('body').hasClass('editor')) {
+        return;
+      }
+      return mutations.forEach(function(mutationRecord) {
+        var newFS, oldFS;
+        oldFS = $('body').hasClass('fullscreen');
+        newFS = $('#tip-bar')[0].style.display === 'none';
+        if (newFS === oldFS) {
+          return;
+        }
+        return $('body')["" + (newFS ? 'add' : 'remove') + "Class"]('fullscreen');
+      });
+    });
     this._init = function(pDebug) {
       var debug;
       debug = function(m) {
@@ -46,7 +83,7 @@
           };
         })(this)
       });
-      $('#topnav .account-nav').after(this.$button);
+      $('#pagewrapper').append(this.$button);
       return debug("EEXT button ready in navbar.");
     };
     this._load = function(pDebug) {

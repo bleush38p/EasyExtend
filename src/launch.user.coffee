@@ -168,6 +168,10 @@
           else debug 'No update available!' if options.verbose
         ).fail (jqxhr, status, error)->
           console.error "Request failed: #{status}, #{error}"
+          EEXT.notify yes,
+            "Something's gone wrong...",
+            "EEXT wasn't able to check for an update automatically. Check the console for additional details.",
+            [["OK", "#", no, yes]]
       return
   update = (data)->
     EEXT.notify yes,

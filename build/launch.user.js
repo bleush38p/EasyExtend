@@ -171,7 +171,8 @@
           }
         }
       }).fail(function(jqxhr, status, error) {
-        return console.error("Request failed: " + status + ", " + error);
+        console.error("Request failed: " + status + ", " + error);
+        return EEXT.notify(true, "Something's gone wrong...", "EEXT wasn't able to check for an update automatically. Check the console for additional details.", [["OK", "#", false, true]]);
       });
     }
   };

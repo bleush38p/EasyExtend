@@ -1,3 +1,4 @@
+# screw you, webstorm
 # if EEXT doesn't exist yet, something's gone hella wrong.
 unless EEXT? then return console.error "EEXT needs to be launched with the official loader."
 
@@ -7,6 +8,36 @@ unless EEXT? then return console.error "EEXT needs to be launched with the offic
   version = "0.0.0.9"
 
   if @verbose then console.debug "[EEXT] has been loaded successfully. (version #{version})"
+
+  # detection of player state
+  do ()->
+    old = window.onhashchange or ->
+    window.onhashchange = (e)->
+      EEXT._hashChange e, old
+  @_hashChange = (e, old)->
+    hash = location.hash
+    $('body')["#{if hash is '#fullscreen' then 'add' else 'remove'}Class"] 'fullscreen'
+    old e
+  @_hashChange {}, -> #run to get current state
+  # sneaky hacky method of determining full screen state in editor:
+  # listen for changes to the opacity of the tip bar
+  # first, a helper (might be used other places)
+  # https://developer.mozilla.org/en/docs/Web/API/MutationObserver
+  @_observe = (target, options, callback)->
+    observer = (new MutationObserver callback)
+    observer.observe target, options
+    observer
+  # now observe the tip bar
+  @_observe $('#tip-bar')[0],
+    {attributes: true, attributeFilter: ['style']},
+    (mutations)->
+      unless $('body').hasClass('editor') then return
+      mutations.forEach (mutationRecord)->
+        oldFS = $('body').hasClass('fullscreen')
+        newFS = $('#tip-bar')[0].style.display is 'none'
+        if newFS is oldFS then return
+        $('body')["#{if newFS then 'add' else 'remove'}Class"] 'fullscreen'
+        # console.log('state changed, editor:', true, '/ fullscreen:', newFS)
 
   @_init = (pDebug)->
     debug = (m)-> pDebug "[_init] #{m}"
@@ -27,7 +58,7 @@ unless EEXT? then return console.error "EEXT needs to be launched with the offic
         @$button.removeClass 'EEXT-error'
         if @loaded is 2 then @_toggleMenu tDebug else @_load tDebug
 
-    $('#topnav .account-nav').after @$button
+    $('#pagewrapper').append @$button
     debug "EEXT button ready in navbar."
 
   @_load = (pDebug)->
